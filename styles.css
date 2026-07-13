@@ -117,7 +117,7 @@ main {
   font-size: 1.5rem;
   margin: 0 0 8px;
 }
-.tree-head p {
+.tree-head .tree-intro {
   margin: 0 0 28px;
   max-width: 62ch;
   color: var(--ink-soft);
@@ -125,16 +125,9 @@ main {
 
 .tree-row.layer1 {
   display: grid;
-  grid-template-columns: 1fr 1.7fr 1fr;
+  grid-template-columns: repeat(3, 1fr);
   gap: 22px;
-  align-items: start;
-}
-
-.branch {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 0;
+  align-items: stretch;
 }
 
 /* A tree node button */
@@ -192,62 +185,7 @@ main {
   border-top-color: var(--c-simulation);
 }
 
-/* Optimization subtree: one shared colour, visibly one contained group. */
-.optimization-branch {
-  background: var(--c-optimization-bg);
-  border: 1px solid #d5deef;
-  border-radius: 16px;
-  padding: 16px;
-  gap: 0;
-}
-.optimization-branch .paradigm {
-  background: var(--card);
-}
-
-.connector {
-  width: 2px;
-  height: 20px;
-  background: #c2cfe6;
-  margin: 4px 0;
-}
-
-.opt-groups {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 14px;
-  width: 100%;
-}
-.opt-group {
-  background: rgba(255, 255, 255, 0.55);
-  border: 1px dashed #c2cfe6;
-  border-radius: 12px;
-  padding: 12px;
-}
-.group-label {
-  font-size: 0.75rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--c-optimization);
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 10px;
-}
-.opt-leaves {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.opt-leaf {
-  border-color: #cbd6ec;
-  flex-direction: row;
-  align-items: center;
-  gap: 10px;
-  padding: 12px 14px;
-}
-.opt-leaf .tnode-title {
-  font-size: 0.98rem;
-}
+/* Badge shown on model tokens (LP, IP, …) in path cards and offer cards. */
 .tnode-badge {
   flex: 0 0 auto;
   font-size: 0.72rem;
@@ -284,23 +222,32 @@ main {
 .crumbs {
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 0.9rem;
-  margin-bottom: 18px;
+  flex-wrap: wrap;
+  gap: 8px;
+  font-size: 0.88rem;
+  margin-bottom: 20px;
 }
-.crumbs a {
+.crumb {
+  color: var(--ink-faint);
+}
+a.crumb {
   color: var(--accent);
   text-decoration: none;
   font-weight: 600;
 }
-.crumbs a:hover {
+a.crumb:hover {
   text-decoration: underline;
+}
+.crumb.current {
+  color: var(--ink);
+  font-weight: 600;
+}
+.crumb.label {
+  color: var(--ink-faint);
 }
 .crumb-sep {
   color: var(--line-strong);
-}
-.crumb-paradigm {
-  color: var(--ink-faint);
+  user-select: none;
 }
 
 .profile-head {
@@ -483,6 +430,154 @@ code {
   max-width: 70ch;
 }
 
+/* ------------------------------------------------- optimization overview page */
+
+.overview.card {
+  background: var(--card);
+  border: 1px solid var(--line);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 30px 34px 34px;
+  border-top: 5px solid var(--c-optimization);
+}
+.overview-intro {
+  margin: 4px 0 8px;
+  max-width: 64ch;
+}
+.paths-heading {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  margin: 28px 0 16px;
+}
+.paths {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 18px;
+}
+.path-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--ink);
+  background: var(--c-optimization-bg);
+  border: 1px solid #d5deef;
+  border-radius: 14px;
+  padding: 20px 22px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease,
+    border-color 0.12s ease;
+}
+.path-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 2px 4px rgba(31, 35, 40, 0.06),
+    0 14px 30px rgba(31, 35, 40, 0.1);
+  border-color: var(--c-optimization);
+}
+.path-card:focus-visible {
+  outline: 3px solid var(--c-optimization);
+  outline-offset: 2px;
+}
+.path-label {
+  font-family: var(--serif);
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: var(--c-optimization);
+}
+.path-desc {
+  color: var(--ink-soft);
+  font-size: 0.98rem;
+}
+.path-leads {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  margin-top: 6px;
+  padding-top: 12px;
+  border-top: 1px dashed #c2cfe6;
+  font-size: 0.92rem;
+}
+.path-leads-label {
+  font-size: 0.72rem;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+  font-weight: 700;
+}
+.path-head {
+  font-weight: 600;
+}
+.path-narrows {
+  color: var(--ink-faint);
+  font-size: 0.88rem;
+}
+.path-narrows em {
+  font-style: normal;
+  font-weight: 700;
+  color: var(--c-optimization);
+}
+
+/* ----------------------------------------------------- next-step offer cards */
+
+.next-steps {
+  margin-top: 30px;
+  padding-top: 22px;
+  border-top: 1px solid var(--line);
+}
+.next-steps-heading {
+  font-family: var(--serif);
+  font-size: 1.2rem;
+  margin: 0 0 14px;
+}
+.offer-cards {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+.offer-card {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  text-align: left;
+  cursor: pointer;
+  font-family: inherit;
+  color: var(--ink);
+  background: #f4f7fb;
+  border: 1px solid #dbe4f1;
+  border-radius: 12px;
+  padding: 14px 18px;
+  transition: transform 0.12s ease, box-shadow 0.12s ease,
+    border-color 0.12s ease;
+}
+.offer-card:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 10px 22px rgba(31, 35, 40, 0.08);
+  border-color: var(--c-optimization);
+}
+.offer-card:focus-visible {
+  outline: 3px solid var(--c-optimization);
+  outline-offset: 2px;
+}
+.offer-body {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  flex: 1;
+}
+.offer-title {
+  font-weight: 600;
+}
+.offer-cond {
+  color: var(--ink-soft);
+  font-size: 0.92rem;
+}
+.offer-arrow {
+  color: var(--c-optimization);
+  font-size: 1.2rem;
+  font-weight: 700;
+}
+
 /* --------------------------------------------------------------- responsive */
 
 @media (max-width: 760px) {
@@ -492,10 +587,11 @@ code {
   .site-header h1 {
     font-size: 1.9rem;
   }
-  .profile.card {
+  .profile.card,
+  .overview.card {
     padding: 24px 20px 28px;
   }
-  .opt-groups {
+  .paths {
     grid-template-columns: 1fr;
   }
 }

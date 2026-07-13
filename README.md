@@ -1,22 +1,35 @@
 # OPAN 2201 — Model selection framework
 
 A small static website that helps OPAN 2201 students decide which modeling tool
-to use for a business problem, and why. It presents a two-layer decision tree and
-a profile for each modeling tool.
+to use for a business problem, and why. It presents a guided decision tree and a
+profile for each modeling tool.
 
 ## The one rule
 
-**All written content lives in [`content/tool_profiles.md`](content/tool_profiles.md).**
-The site fetches that Markdown file at load time, parses it, and renders it. No
-profile wording is stored in the HTML, CSS, or JavaScript.
+**Every visible word on the site lives in the two files under [`content/`](content/):**
 
-To change any wording on the site, edit `content/tool_profiles.md` and reload.
-That is the only step. No build, no code changes.
+- [`content/site_text.md`](content/site_text.md) — the page's own chrome: the
+  header, intros, section headings, button labels, and breadcrumb text.
+- [`content/tool_profiles.md`](content/tool_profiles.md) — the profile for each
+  modeling tool.
 
-## Editing the content
+The site fetches both files at load time, parses them, and renders from them. No
+page wording is stored in the HTML, CSS, or JavaScript. To change any wording on
+the site, edit the relevant file and reload. That is the only step — no build, no
+code changes.
 
-Open `content/tool_profiles.md` in any text editor. Its structure is fixed and
-the site relies on it:
+## Editing the page chrome — `content/site_text.md`
+
+Open it in any text editor. It is organised into `## Section` groups, each with
+`#### Field` entries. **Keep the `##` and `####` headings as they are; change only
+the text beneath a `####` heading.** For example, to change the site's main
+heading, edit the text under `#### Title` in the `## Header` section. The
+`## Next-step offers` section holds the conditions shown when one model leads to a
+more specific one (the `####` heading there is the target model's abbreviation).
+
+## Editing the model profiles — `content/tool_profiles.md`
+
+Its structure is fixed and the site relies on it:
 
 - `#` heading — a paradigm: **Descriptive**, **Optimization**, or **Simulation**.
 - `##` heading — a model (a node), e.g. `Linear programming (LP)`.
@@ -37,6 +50,18 @@ the site relies on it:
 You can add, remove, or reword expandable sections freely; the site renders
 whatever expandable fields a model contains, in the order they appear. You do not
 have to touch any code.
+
+## How the site is navigated
+
+- The landing page shows the three paradigms: **Descriptive**, **Optimization**,
+  and **Simulation**.
+- Descriptive and Simulation open their single model profile directly.
+- Optimization opens an **overview page** (built from the Optimization intro in
+  the profiles file) that offers two paths: **Linear** → LP, and **Nonlinear** →
+  NLP. From LP the site offers IP and BP; from NLP it offers MINLP.
+- Every model page shows a **breadcrumb trail** (e.g. *Decision tree ›
+  Optimization › Linear › LP › IP*) so a student can see how they arrived and step
+  back up.
 
 ## Previewing locally
 
@@ -73,7 +98,7 @@ that is expected.
 4. GitHub Pages serves the site correctly — `fetch()` works in production, so no
    build step is required.
 
-After it is published, editing `content/tool_profiles.md` on GitHub (or pushing a
+After it is published, editing either file in `content/` on GitHub (or pushing a
 change to it) updates the live site on reload. Nothing else needs to run.
 
 ## Files
@@ -81,11 +106,16 @@ change to it) updates the live site on reload. Nothing else needs to run.
 ```
 index.html            Page shell (no content).
 styles.css            Visual layer.
-app.js                Fetches, parses, and renders the Markdown. No content.
+app.js                Fetches, parses, and renders the content. No wording.
 content/
-  tool_profiles.md    The single source of all written content — edit this.
+  site_text.md        The page's own chrome (header, labels, headings) — edit this.
+  tool_profiles.md    The per-model profiles — edit this.
+vendor/
+  marked.min.js       Markdown parser (renders the prose inside each field).
 README.md             This file.
 ```
 
-The Markdown parser [marked](https://marked.js.org/) is loaded from a CDN to turn
-the prose inside each field into HTML.
+The Markdown parser is [marked](https://marked.js.org/). It is vendored as a
+single local file (`vendor/marked.min.js`) rather than loaded from a CDN, so the
+site has no external dependency: it works offline, in any sandbox, and does not
+break if a CDN is unavailable. There is still no build step.

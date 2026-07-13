@@ -3,46 +3,42 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>OPAN 2201 · Model Selection Framework</title>
-  <meta name="description" content="A decision guide for choosing the right modeling tool for a business problem — OPAN 2201." />
-  <link rel="preconnect" href="https://cdn.jsdelivr.net" />
+  <!-- Title and description are set at load time from content/site_text.md. -->
+  <title>Loading…</title>
+  <meta id="meta-description" name="description" content="" />
   <link rel="stylesheet" href="styles.css" />
 </head>
 <body>
-  <a class="skip-link" href="#main">Skip to content</a>
+  <!-- No page wording lives in this file. Every visible string is read at load
+       time from content/site_text.md (chrome) or content/tool_profiles.md
+       (model profiles). The elements below are empty shells that app.js fills.
+       data-text="Section::Field" maps an element to a field in site_text.md. -->
+
+  <a class="skip-link" href="#main" data-text="Page::Skip link"></a>
 
   <header class="site-header">
     <div class="wrap">
-      <p class="eyebrow">OPAN 2201 · MORE Program</p>
-      <h1>Model selection framework</h1>
-      <p class="lede">
-        A guide to choosing the right modeling tool for a business problem — and
-        knowing why. Start from the decision tree, then open any model to read
-        what to build and the reasoning behind it.
-      </p>
+      <p class="eyebrow" data-text="Header::Eyebrow"></p>
+      <h1 data-text="Header::Title"></h1>
+      <p class="lede" data-text-md="Header::Intro"></p>
     </div>
   </header>
 
   <main id="main" class="wrap">
-    <!-- The tree and profile views are rendered here by app.js from
-         content/tool_profiles.md. No profile wording lives in this file. -->
     <div id="app" aria-live="polite">
-      <p class="loading">Loading the framework…</p>
+      <p class="loading" data-text="Page::Loading"></p>
     </div>
   </main>
 
   <footer class="site-footer">
     <div class="wrap">
-      <p>
-        Content is authored in <code>content/tool_profiles.md</code> and rendered
-        at load time. Editing that file is the only step needed to change any
-        wording on this site.
-      </p>
+      <p data-text-md="Page::Footer"></p>
     </div>
   </footer>
 
-  <!-- Markdown parser (renders the prose inside each field). -->
-  <script src="https://cdn.jsdelivr.net/npm/marked@12.0.2/marked.min.js"></script>
+  <!-- Markdown parser (renders the prose inside each field). Vendored locally
+       (vendor/marked.min.js) so the site has no external dependency. -->
+  <script src="vendor/marked.min.js"></script>
   <script src="app.js"></script>
 </body>
 </html>
