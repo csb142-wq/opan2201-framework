@@ -23,11 +23,6 @@ Skip to content
 #### Loading
 Loading the framework…
 
-#### Footer
-The site's wording lives in the two files under `content/` — `site_text.md` for
-the page itself and `tool_profiles.md` for the models. Editing those files is the
-only step needed to change any wording on this site.
-
 ## Header
 
 #### Eyebrow
@@ -57,6 +52,45 @@ Model selection decision tree
 
 #### Paradigm label
 Paradigm
+
+#### Root label
+Business question
+
+## Tree subtitles
+
+A short line shown beneath each box in the decision-tree diagram. The `#### `
+heading names the box; the text beneath it is the caption. Leave a caption blank
+to show only the box's title.
+
+#### Descriptive
+what happened
+
+#### Optimization
+the best decision
+
+#### Simulation
+uncertainty
+
+#### Linear
+linear
+
+#### Nonlinear
+something curves
+
+#### LP
+Solver / PuLP
+
+#### NLP
+minimize()
+
+#### IP
+whole-number
+
+#### BP
+yes / no
+
+#### MINLP
+basinhopping
 
 ## Optimization overview
 

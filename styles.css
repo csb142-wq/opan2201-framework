@@ -13,11 +13,21 @@
 
   /* Paradigm colours. Optimization is one hue for the whole subtree. */
   --c-descriptive: #2f8f6f;
-  --c-descriptive-bg: #eaf6f1;
-  --c-optimization: #3d5a99;
-  --c-optimization-bg: #eaeff8;
-  --c-simulation: #c0803a;
-  --c-simulation-bg: #f8f0e3;
+  --c-descriptive-bg: #e8f4ee;
+  --c-descriptive-border: #a8d5c3;
+  --c-optimization: #5a4fbf;
+  --c-optimization-bg: #ece9fb;
+  --c-optimization-border: #c4bced;
+  --c-simulation: #b5613f;
+  --c-simulation-bg: #f7ece5;
+  --c-simulation-border: #e3bda9;
+
+  /* Neutral root box ("Business question") — not a paradigm, not clickable. */
+  --c-root-bg: #efece2;
+  --c-root-border: #d8d2c2;
+  --c-root-ink: #55514a;
+
+  --tree-line: #9198a1;
 
   --radius: 12px;
   --shadow: 0 1px 2px rgba(31, 35, 40, 0.05),
@@ -123,66 +133,121 @@ main {
   color: var(--ink-soft);
 }
 
-.tree-row.layer1 {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 22px;
-  align-items: stretch;
-}
-
-/* A tree node button */
-.tnode {
-  width: 100%;
-  text-align: left;
-  border: 1px solid var(--line-strong);
-  background: var(--card);
-  border-radius: var(--radius);
-  padding: 16px 18px;
-  cursor: pointer;
-  font-family: inherit;
-  font-size: 1rem;
-  color: var(--ink);
-  box-shadow: var(--shadow);
-  transition: transform 0.12s ease, box-shadow 0.12s ease,
-    border-color 0.12s ease;
+/* Top-down decision-tree diagram: rows of boxes joined by SVG connector lines.
+   The diagram can be wider than the text column, so it scrolls horizontally on
+   its own if the viewport is narrow. */
+.tree-diagram {
+  position: relative;
   display: flex;
   flex-direction: column;
-  gap: 4px;
+  align-items: center;
+  padding: 8px 4px 12px;
+  overflow-x: auto;
 }
-.tnode:hover {
+.tree-lines {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 0;
+  pointer-events: none;
+}
+.tree-lines line {
+  stroke: var(--tree-line);
+  stroke-width: 2;
+  stroke-linecap: round;
+}
+
+.tree-level {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
+.level-paradigms {
+  justify-content: space-between;
+  max-width: 860px;
+  margin-top: 54px;
+}
+.opt-subtree {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 88px;
+  margin-top: 54px;
+}
+.subcol {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 50px;
+}
+.leaf-row {
+  display: flex;
+  gap: 22px;
+}
+
+/* A box in the diagram. Buttons are clickable; the static root is not. */
+.tnode2 {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 3px;
+  min-width: 150px;
+  padding: 14px 20px;
+  border-radius: 14px;
+  border: 1.5px solid var(--line-strong);
+  background: var(--card);
+  font-family: inherit;
+  text-align: center;
+  cursor: pointer;
+  transition: transform 0.12s ease, box-shadow 0.12s ease;
+}
+.tnode2:not(.is-static):hover {
   transform: translateY(-2px);
-  box-shadow: 0 2px 4px rgba(31, 35, 40, 0.06),
-    0 14px 30px rgba(31, 35, 40, 0.1);
+  box-shadow: 0 10px 24px rgba(31, 35, 40, 0.12);
 }
-.tnode:focus-visible {
-  outline: 3px solid var(--accent);
+.tnode2:focus-visible {
+  outline: 3px solid var(--c-optimization);
   outline-offset: 2px;
 }
-
-.tnode-kind {
-  font-size: 0.72rem;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  font-weight: 600;
+.tnode2.is-static {
+  cursor: default;
 }
-.tnode-title {
-  font-family: var(--serif);
-  font-size: 1.18rem;
-  font-weight: 600;
+.tnode2-title {
+  font-weight: 700;
+  font-size: 1.05rem;
+}
+.tnode2-sub {
+  font-size: 0.85rem;
+  opacity: 0.85;
 }
 
-.paradigm {
-  border-top-width: 4px;
+/* Colour variants (fill + border + text), matching the paradigm palette. */
+.tnode2.c-root {
+  background: var(--c-root-bg);
+  border-color: var(--c-root-border);
+  color: var(--c-root-ink);
 }
-.paradigm.c-descriptive {
-  border-top-color: var(--c-descriptive);
+.tnode2.c-descriptive {
+  background: var(--c-descriptive-bg);
+  border-color: var(--c-descriptive-border);
+  color: var(--c-descriptive);
 }
-.paradigm.c-optimization {
-  border-top-color: var(--c-optimization);
+.tnode2.c-optimization {
+  background: var(--c-optimization-bg);
+  border-color: var(--c-optimization-border);
+  color: var(--c-optimization);
 }
-.paradigm.c-simulation {
-  border-top-color: var(--c-simulation);
+.tnode2.c-simulation {
+  background: var(--c-simulation-bg);
+  border-color: var(--c-simulation-border);
+  color: var(--c-simulation);
 }
 
 /* Badge shown on model tokens (LP, IP, …) in path cards and offer cards. */
@@ -303,8 +368,8 @@ a.crumb:hover {
 
 /* Recommended tool: the "what to build" instruction — made distinct. */
 .field.recommended {
-  background: #f4f7fb;
-  border: 1px solid #dbe4f1;
+  background: #f6f6f2;
+  border: 1px solid var(--line-strong);
   border-left: 4px solid var(--accent);
   border-radius: 12px;
   padding: 18px 20px;
@@ -323,7 +388,7 @@ a.crumb:hover {
   color: var(--c-optimization);
   font-weight: 700;
   text-decoration: none;
-  border-bottom: 1.5px solid rgba(61, 90, 153, 0.3);
+  border-bottom: 1.5px solid rgba(90, 79, 191, 0.3);
   white-space: nowrap;
 }
 .model-link:hover {
@@ -419,17 +484,6 @@ code {
   border-radius: 5px;
 }
 
-.site-footer {
-  border-top: 1px solid var(--line);
-  padding: 24px 0 40px;
-  color: var(--ink-faint);
-  font-size: 0.9rem;
-}
-.site-footer p {
-  margin: 0;
-  max-width: 70ch;
-}
-
 /* ------------------------------------------------- optimization overview page */
 
 .overview.card {
@@ -463,7 +517,7 @@ code {
   font-family: inherit;
   color: var(--ink);
   background: var(--c-optimization-bg);
-  border: 1px solid #d5deef;
+  border: 1px solid var(--c-optimization-border);
   border-radius: 14px;
   padding: 20px 22px;
   transition: transform 0.12s ease, box-shadow 0.12s ease,
@@ -495,7 +549,7 @@ code {
   gap: 4px;
   margin-top: 6px;
   padding-top: 12px;
-  border-top: 1px dashed #c2cfe6;
+  border-top: 1px dashed var(--c-optimization-border);
   font-size: 0.92rem;
 }
 .path-leads-label {
@@ -543,8 +597,8 @@ code {
   cursor: pointer;
   font-family: inherit;
   color: var(--ink);
-  background: #f4f7fb;
-  border: 1px solid #dbe4f1;
+  background: var(--c-optimization-bg);
+  border: 1px solid var(--c-optimization-border);
   border-radius: 12px;
   padding: 14px 18px;
   transition: transform 0.12s ease, box-shadow 0.12s ease,
@@ -581,9 +635,6 @@ code {
 /* --------------------------------------------------------------- responsive */
 
 @media (max-width: 760px) {
-  .tree-row.layer1 {
-    grid-template-columns: 1fr;
-  }
   .site-header h1 {
     font-size: 1.9rem;
   }
@@ -593,6 +644,21 @@ code {
   }
   .paths {
     grid-template-columns: 1fr;
+  }
+  /* Keep the diagram legible on small screens: shrink boxes and let the
+     diagram scroll sideways within its own container rather than squashing. */
+  .tnode2 {
+    min-width: 118px;
+    padding: 11px 14px;
+  }
+  .tnode2-title {
+    font-size: 0.98rem;
+  }
+  .opt-subtree {
+    gap: 40px;
+  }
+  .level-paradigms {
+    gap: 12px;
   }
 }
 

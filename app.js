@@ -55,6 +55,11 @@ async function boot() {
 
     fillStaticText();
     window.addEventListener("hashchange", () => route(model));
+    // Redraw the tree's connector lines when the viewport changes.
+    window.addEventListener("resize", () => {
+      const diagram = document.querySelector(".tree-diagram");
+      if (diagram) drawTreeConnectors(diagram);
+    });
     route(model);
   } catch (err) {
     app.innerHTML =
@@ -292,21 +297,33 @@ function paradigmTarget(model, paradigm) {
 // ---------------------------------------------------------------------------
 
 function renderTree(model) {
-  const card = (paradigm) => {
-    if (!paradigm) return "";
-    const cls = paradigmClass(paradigm.name);
+  const byName = (n) => model.paradigms.find((p) => p.name === n);
+  const nodeHref = (token) => {
+    const id = model.tokenToId[token];
+    return id ? "#/node/" + encodeURIComponent(id) : null;
+  };
+  const paradigmName = (n) => (byName(n) ? byName(n).name : n);
+
+  // One box in the diagram. `key` links it to the connector map; `href` null
+  // makes it a non-clickable element rather than a button (used for the root).
+  const box = (key, cls, title, subtitleKey, href) => {
+    const subtitle = subtitleKey ? textOf("Tree subtitles", subtitleKey) : "";
+    const tag = href ? "button" : "div";
+    const goto = href ? ` data-goto="${escapeHtml(href)}"` : "";
+    const extra = href ? "" : " is-static";
     return (
-      `<button class="tnode paradigm c-${cls}" ` +
-      `data-goto="${escapeHtml(paradigmTarget(model, paradigm))}">` +
-      `<span class="tnode-kind">${escapeHtml(
-        textOf("Decision tree section", "Paradigm label")
-      )}</span>` +
-      `<span class="tnode-title">${escapeHtml(paradigm.name)}</span>` +
-      `</button>`
+      `<${tag} class="tnode2 c-${cls}${extra}" ` +
+      `data-key="${escapeHtml(key)}"${goto}>` +
+      `<span class="tnode2-title">${escapeHtml(title)}</span>` +
+      (subtitle
+        ? `<span class="tnode2-sub">${escapeHtml(subtitle)}</span>`
+        : "") +
+      `</${tag}>`
     );
   };
 
-  const byName = (n) => model.paradigms.find((p) => p.name === n);
+  const paradigmLabel = (n) => paradigmName(n);
+  const optOverview = "#/overview/optimization";
 
   app.innerHTML = `
     <section class="tree" aria-label="${escapeHtml(
@@ -319,14 +336,145 @@ function renderTree(model) {
           "Intro"
         )}</div>
       </div>
-      <div class="tree-row layer1">
-        ${card(byName("Descriptive"))}
-        ${card(byName("Optimization"))}
-        ${card(byName("Simulation"))}
+
+      <div class="tree-diagram">
+        <svg class="tree-lines" aria-hidden="true"
+             preserveAspectRatio="none"></svg>
+
+        <div class="tree-level level-root">
+          ${box(
+            "root",
+            "root",
+            textOf("Decision tree section", "Root label"),
+            null,
+            null
+          )}
+        </div>
+
+        <div class="tree-level level-paradigms">
+          ${box(
+            "Descriptive",
+            "descriptive",
+            paradigmLabel("Descriptive"),
+            "Descriptive",
+            nodeHref("Descriptive")
+          )}
+          ${box(
+            "Optimization",
+            "optimization",
+            paradigmLabel("Optimization"),
+            "Optimization",
+            optOverview
+          )}
+          ${box(
+            "Simulation",
+            "simulation",
+            paradigmLabel("Simulation"),
+            "Simulation",
+            nodeHref("Simulation")
+          )}
+        </div>
+
+        <div class="opt-subtree">
+          <div class="subcol subcol-linear">
+            ${box(
+              "Linear",
+              "optimization",
+              textOf("Optimization overview", "Linear label"),
+              "Linear",
+              nodeHref("LP")
+            )}
+            ${box("LP", "optimization", "LP", "LP", nodeHref("LP"))}
+            <div class="leaf-row">
+              ${box("IP", "optimization", "IP", "IP", nodeHref("IP"))}
+              ${box("BP", "optimization", "BP", "BP", nodeHref("BP"))}
+            </div>
+          </div>
+
+          <div class="subcol subcol-nonlinear">
+            ${box(
+              "Nonlinear",
+              "optimization",
+              textOf("Optimization overview", "Nonlinear label"),
+              "Nonlinear",
+              nodeHref("NLP")
+            )}
+            ${box("NLP", "optimization", "NLP", "NLP", nodeHref("NLP"))}
+            ${box("MINLP", "optimization", "MINLP", "MINLP", nodeHref("MINLP"))}
+          </div>
+        </div>
       </div>
     </section>
   `;
   wireGoto();
+
+  const diagram = app.querySelector(".tree-diagram");
+  // Draw immediately (reading layout forces a synchronous reflow), then again
+  // shortly after in case web fonts change box widths. We do not rely on
+  // requestAnimationFrame alone, since it does not fire in a backgrounded tab.
+  drawTreeConnectors(diagram);
+  setTimeout(() => drawTreeConnectors(diagram), 60);
+  setTimeout(() => drawTreeConnectors(diagram), 350);
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(() => drawTreeConnectors(diagram));
+  }
+}
+
+// Draw the elbow connector lines between parent and child boxes, measured from
+// the rendered layout so they stay correct at any width.
+function drawTreeConnectors(diagram) {
+  const svg = diagram.querySelector(".tree-lines");
+  if (!svg) return;
+  const box = diagram.getBoundingClientRect();
+  svg.setAttribute("viewBox", `0 0 ${box.width} ${box.height}`);
+  svg.setAttribute("width", box.width);
+  svg.setAttribute("height", box.height);
+
+  const at = (el) => {
+    const r = el.getBoundingClientRect();
+    return {
+      x: r.left + r.width / 2 - box.left,
+      top: r.top - box.top,
+      bottom: r.bottom - box.top,
+    };
+  };
+  const get = (key) =>
+    diagram.querySelector(`[data-key="${cssEscape(key)}"]`);
+
+  // parent key -> child keys
+  const edges = [
+    ["root", ["Descriptive", "Optimization", "Simulation"]],
+    ["Optimization", ["Linear", "Nonlinear"]],
+    ["Linear", ["LP"]],
+    ["LP", ["IP", "BP"]],
+    ["Nonlinear", ["NLP"]],
+    ["NLP", ["MINLP"]],
+  ];
+
+  const segs = [];
+  for (const [pk, cks] of edges) {
+    const p = get(pk);
+    if (!p) continue;
+    const pc = at(p);
+    const kids = cks.map(get).filter(Boolean).map(at);
+    if (!kids.length) continue;
+    const busY = (pc.bottom + Math.min(...kids.map((k) => k.top))) / 2;
+    segs.push([pc.x, pc.bottom, pc.x, busY]); // parent stem
+    if (kids.length > 1 || Math.abs(kids[0].x - pc.x) > 0.5) {
+      const xs = kids.map((k) => k.x).concat(pc.x);
+      segs.push([Math.min(...xs), busY, Math.max(...xs), busY]); // bus
+    }
+    for (const k of kids) segs.push([k.x, busY, k.x, k.top]); // child drop
+  }
+
+  svg.innerHTML = segs
+    .map(
+      ([x1, y1, x2, y2]) =>
+        `<line x1="${round(x1)}" y1="${round(y1)}" x2="${round(
+          x2
+        )}" y2="${round(y2)}" />`
+    )
+    .join("");
 }
 
 // ---------------------------------------------------------------------------
@@ -695,4 +843,12 @@ function escapeHtml(s) {
 
 function escapeRegex(s) {
   return s.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
+}
+
+function cssEscape(s) {
+  return window.CSS && CSS.escape ? CSS.escape(s) : String(s).replace(/"/g, '\\"');
+}
+
+function round(n) {
+  return Math.round(n * 10) / 10;
 }
