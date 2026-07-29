@@ -42,40 +42,60 @@ to build and the reasoning behind it.
 Decision tree
 
 #### Intro
-Start with what you are trying to do. That choice sets the paradigm: describe,
-optimize, or simulate. Inside optimization, two further questions narrow the
-choice: is the relationship linear or nonlinear, and must a decision variable be a
-whole number or a yes or no value?
+Start with what you are trying to do. Each fork below asks one question; follow
+your answers down to the model that fits, then open it.
 
 #### Accessible label
 Model selection decision tree
 
-#### Paradigm label
-Paradigm
+## Groups
 
-#### Root label
-Business question
+The two branches of the tree. Each has a label and a short caption shown beneath
+it.
+
+#### Describe label
+Describe
+
+#### Describe caption
+Understand what happened, or what could happen.
+
+#### Decide label
+Decide
+
+#### Decide caption
+Find the best course of action under constraints.
+
+## Questions
+
+The question shown at each fork in the decision tree. Change the wording freely;
+the answers below each question stay the same.
+
+#### What do you need
+What do you need?
+
+#### Inputs uncertain
+Are the inputs uncertain?
+
+#### Everything linear
+Is every relationship linear?
+
+#### Variable type
+What type are the variables?
+
+#### Whole number or yes-no
+Is any variable a whole number or a yes/no choice?
 
 ## Tree subtitles
 
-A short line shown beneath each box in the decision-tree diagram. The `#### `
-heading names the box; the text beneath it is the caption. Leave a caption blank
-to show only the box's title.
+A short line shown beneath each model box in the decision-tree diagram. The
+`#### ` heading names the box; the text beneath it is the caption. Leave a caption
+blank to show only the box's title.
 
 #### Descriptive
 what happened
 
-#### Optimization
-the best decision
-
 #### Simulation
 uncertainty
-
-#### Linear
-linear
-
-#### Nonlinear
-something curves
 
 #### LP
 Solver / PuLP
@@ -111,11 +131,8 @@ Nonlinear
 A relationship curves: a variable is squared, two variables are multiplied, or a
 logarithm is involved.
 
-#### Leads to label
-Starts with
-
-#### Narrows to label
-then narrows to
+#### Options label
+Models
 
 ## Model page
 
@@ -123,27 +140,8 @@ then narrows to
 The reasoning — limitations, tradeoffs, ethics, and model-specific detail. Open
 what you need.
 
-#### Where to go next heading
-Narrow further
-
 #### Back to tree
 Decision tree
 
 #### Breadcrumb separator
 ›
-
-## Next-step offers
-
-These lines describe when to continue from one model to a more specific one. The
-`#### ` heading is the target model's abbreviation; the text beneath it is the
-condition shown to the student.
-
-#### IP
-A decision variable must be a whole number, such as a count or a fixed increment.
-
-#### BP
-The decision is yes or no — whether to include an option at all.
-
-#### MINLP
-The problem is nonlinear and a decision variable must also be a whole number or a
-yes or no value.

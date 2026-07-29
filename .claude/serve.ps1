@@ -37,7 +37,15 @@ $handler = {
       if ($full.StartsWith($rootFull) -and (Test-Path $full -PathType Leaf)) {
         $ext = [System.IO.Path]::GetExtension($full).ToLower()
         $ctype = if ($types.ContainsKey($ext)) { $types[$ext] } else { "application/octet-stream" }
-        $bytes = [System.IO.File]::ReadAllBytes($full)
+        # Open with FileShare.ReadWrite so a file locked by another process
+        # (e.g. OneDrive syncing this folder) can still be served.
+        $fs = [System.IO.File]::Open($full, [System.IO.FileMode]::Open, [System.IO.FileAccess]::Read, [System.IO.FileShare]::ReadWrite)
+        try {
+          $br = New-Object System.IO.BinaryReader($fs)
+          $bytes = $br.ReadBytes([int]$fs.Length)
+        } finally {
+          $fs.Close()
+        }
         $status = "200 OK"
       } else {
         $status = "404 Not Found"

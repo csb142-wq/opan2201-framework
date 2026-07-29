@@ -27,10 +27,12 @@ const CORE_ORDER = [
 // The guided two-level structure inside Optimization. This is navigation
 // SCAFFOLDING (which model leads to which), keyed by the stable tag tokens
 // (LP, IP, ...) rather than by titles, and resolved to nodes at render time.
-// No wording lives here.
+// No wording lives here. Within optimization, LP/IP/BP are three answers to the
+// same variable-type question (siblings), and NLP/MINLP are two answers to the
+// whole-number/yes-no question.
 const OPT_BRANCHES = {
-  linear: { head: "LP", childrenOf: { LP: ["IP", "BP"] } },
-  nonlinear: { head: "NLP", childrenOf: { NLP: ["MINLP"] } },
+  linear: { members: ["LP", "IP", "BP"] },
+  nonlinear: { members: ["NLP", "MINLP"] },
 };
 
 const app = document.getElementById("app");
@@ -297,33 +299,55 @@ function paradigmTarget(model, paradigm) {
 // ---------------------------------------------------------------------------
 
 function renderTree(model) {
-  const byName = (n) => model.paradigms.find((p) => p.name === n);
   const nodeHref = (token) => {
     const id = model.tokenToId[token];
     return id ? "#/node/" + encodeURIComponent(id) : null;
   };
-  const paradigmName = (n) => (byName(n) ? byName(n).name : n);
+  const paradigmName = (n) => {
+    const p = model.paradigms.find((x) => x.name === n);
+    return p ? p.name : n;
+  };
+  const q = (field) => textOf("Questions", field);
+  const grp = (field) => textOf("Groups", field);
 
-  // One box in the diagram. `key` links it to the connector map; `href` null
-  // makes it a non-clickable element rather than a button (used for the root).
-  const box = (key, cls, title, subtitleKey, href) => {
+  // A neutral question box at a fork. Never clickable.
+  const question = (key, field) =>
+    `<div class="tnode2 kind-question is-static" data-key="${escapeHtml(key)}">` +
+    `<span class="tnode2-title">${escapeHtml(q(field))}</span></div>`;
+
+  // A colored, clickable model box (a destination).
+  const modelBox = (key, cls, title, subtitleKey, href) => {
     const subtitle = subtitleKey ? textOf("Tree subtitles", subtitleKey) : "";
-    const tag = href ? "button" : "div";
-    const goto = href ? ` data-goto="${escapeHtml(href)}"` : "";
-    const extra = href ? "" : " is-static";
     return (
-      `<${tag} class="tnode2 c-${cls}${extra}" ` +
-      `data-key="${escapeHtml(key)}"${goto}>` +
+      `<button class="tnode2 kind-model c-${cls}" ` +
+      `data-key="${escapeHtml(key)}" data-goto="${escapeHtml(href)}">` +
       `<span class="tnode2-title">${escapeHtml(title)}</span>` +
       (subtitle
         ? `<span class="tnode2-sub">${escapeHtml(subtitle)}</span>`
         : "") +
-      `</${tag}>`
+      `</button>`
     );
   };
 
-  const paradigmLabel = (n) => paradigmName(n);
-  const optOverview = "#/overview/optimization";
+  // A small answer chip (Linear / Nonlinear) that labels a branch. Static.
+  const chip = (key, label) =>
+    `<div class="tnode2 kind-chip c-decide is-static" data-key="${escapeHtml(
+      key
+    )}"><span class="tnode2-title">${escapeHtml(label)}</span></div>`;
+
+  // A group header. Static label with an optional caption.
+  const groupHeader = (key, cls, labelField, captionField) => {
+    const caption = grp(captionField);
+    return (
+      `<div class="group-label kind-grouphdr c-${cls}" ` +
+      `data-key="${escapeHtml(key)}">` +
+      `<span class="group-label-title">${escapeHtml(grp(labelField))}</span>` +
+      (caption
+        ? `<span class="group-label-cap">${escapeHtml(caption)}</span>`
+        : "") +
+      `</div>`
+    );
+  };
 
   app.innerHTML = `
     <section class="tree" aria-label="${escapeHtml(
@@ -341,66 +365,77 @@ function renderTree(model) {
         <svg class="tree-lines" aria-hidden="true"
              preserveAspectRatio="none"></svg>
 
-        <div class="tree-level level-root">
-          ${box(
-            "root",
-            "root",
-            textOf("Decision tree section", "Root label"),
-            null,
-            null
-          )}
+        <div class="tree-level level-q1">
+          ${question("q_need", "What do you need")}
         </div>
 
-        <div class="tree-level level-paradigms">
-          ${box(
-            "Descriptive",
-            "descriptive",
-            paradigmLabel("Descriptive"),
-            "Descriptive",
-            nodeHref("Descriptive")
-          )}
-          ${box(
-            "Optimization",
-            "optimization",
-            paradigmLabel("Optimization"),
-            "Optimization",
-            optOverview
-          )}
-          ${box(
-            "Simulation",
-            "simulation",
-            paradigmLabel("Simulation"),
-            "Simulation",
-            nodeHref("Simulation")
-          )}
-        </div>
-
-        <div class="opt-subtree">
-          <div class="subcol subcol-linear">
-            ${box(
-              "Linear",
-              "optimization",
-              textOf("Optimization overview", "Linear label"),
-              "Linear",
-              nodeHref("LP")
+        <div class="groups-row">
+          <div class="group group-describe">
+            ${groupHeader(
+              "describe_hdr",
+              "describe",
+              "Describe label",
+              "Describe caption"
             )}
-            ${box("LP", "optimization", "LP", "LP", nodeHref("LP"))}
-            <div class="leaf-row">
-              ${box("IP", "optimization", "IP", "IP", nodeHref("IP"))}
-              ${box("BP", "optimization", "BP", "BP", nodeHref("BP"))}
+            <div class="group-body">
+              ${question("q_uncertain", "Inputs uncertain")}
+              <div class="answer-row">
+                ${modelBox(
+                  "Descriptive",
+                  "descriptive",
+                  paradigmName("Descriptive"),
+                  "Descriptive",
+                  nodeHref("Descriptive")
+                )}
+                ${modelBox(
+                  "Simulation",
+                  "simulation",
+                  paradigmName("Simulation"),
+                  "Simulation",
+                  nodeHref("Simulation")
+                )}
+              </div>
             </div>
           </div>
 
-          <div class="subcol subcol-nonlinear">
-            ${box(
-              "Nonlinear",
-              "optimization",
-              textOf("Optimization overview", "Nonlinear label"),
-              "Nonlinear",
-              nodeHref("NLP")
+          <div class="group group-decide">
+            ${groupHeader(
+              "decide_hdr",
+              "decide",
+              "Decide label",
+              "Decide caption"
             )}
-            ${box("NLP", "optimization", "NLP", "NLP", nodeHref("NLP"))}
-            ${box("MINLP", "optimization", "MINLP", "MINLP", nodeHref("MINLP"))}
+            <div class="group-body">
+              ${question("q_linear", "Everything linear")}
+              <div class="subbranch-row">
+                <div class="subbranch">
+                  ${chip("Linear", textOf("Optimization overview", "Linear label"))}
+                  ${question("q_vartype", "Variable type")}
+                  <div class="answer-row">
+                    ${modelBox("LP", "optimization", "LP", "LP", nodeHref("LP"))}
+                    ${modelBox("IP", "optimization", "IP", "IP", nodeHref("IP"))}
+                    ${modelBox("BP", "optimization", "BP", "BP", nodeHref("BP"))}
+                  </div>
+                </div>
+                <div class="subbranch">
+                  ${chip(
+                    "Nonlinear",
+                    textOf("Optimization overview", "Nonlinear label")
+                  )}
+                  ${question("q_wholeyesno", "Whole number or yes-no")}
+                  <div class="answer-row">
+                    ${modelBox("NLP", "optimization", "NLP", "NLP", nodeHref("NLP"))}
+                    ${modelBox(
+                      "MINLP",
+                      "optimization",
+                      "MINLP",
+                      "MINLP",
+                      nodeHref("MINLP")
+                    )}
+                  </div>
+                </div>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -441,14 +476,30 @@ function drawTreeConnectors(diagram) {
   const get = (key) =>
     diagram.querySelector(`[data-key="${cssEscape(key)}"]`);
 
-  // parent key -> child keys
+  // Centre the first question over its two group headers (the groups have
+  // unequal widths, so its natural centre would sit off to one side). Use
+  // `left` (the box is position:relative) rather than transform, which the
+  // node's transition would animate/override.
+  const q1 = get("q_need");
+  const dh = get("describe_hdr");
+  const eh = get("decide_hdr");
+  if (q1 && dh && eh) {
+    q1.style.left = "0px";
+    const mid = (at(dh).x + at(eh).x) / 2;
+    q1.style.left = `${round(mid - at(q1).x)}px`;
+  }
+
+  // parent key -> child keys, following the question-and-answer flow.
   const edges = [
-    ["root", ["Descriptive", "Optimization", "Simulation"]],
-    ["Optimization", ["Linear", "Nonlinear"]],
-    ["Linear", ["LP"]],
-    ["LP", ["IP", "BP"]],
-    ["Nonlinear", ["NLP"]],
-    ["NLP", ["MINLP"]],
+    ["q_need", ["describe_hdr", "decide_hdr"]],
+    ["describe_hdr", ["q_uncertain"]],
+    ["q_uncertain", ["Descriptive", "Simulation"]],
+    ["decide_hdr", ["q_linear"]],
+    ["q_linear", ["Linear", "Nonlinear"]],
+    ["Linear", ["q_vartype"]],
+    ["Nonlinear", ["q_wholeyesno"]],
+    ["q_vartype", ["LP", "IP", "BP"]],
+    ["q_wholeyesno", ["NLP", "MINLP"]],
   ];
 
   const segs = [];
@@ -485,27 +536,24 @@ function renderOptimizationOverview(model) {
   const paradigm = model.paradigms.find((p) => p.name === "Optimization");
   if (!paradigm) return renderTree(model);
 
+  // Each branch lists its member models as clickable chips (LP/IP/BP are
+  // co-equal answers to the variable-type question; NLP/MINLP likewise).
   const pathCard = (branchKey, labelField, descField) => {
-    const def = OPT_BRANCHES[branchKey];
-    const headId = model.tokenToId[def.head];
-    if (!headId) return "";
-    const head = model.byId[headId];
-    const kids = (def.childrenOf[def.head] || [])
+    const members = OPT_BRANCHES[branchKey].members
       .map((t) => model.tokenToId[t] && model.byId[model.tokenToId[t]])
       .filter(Boolean);
-
-    const narrows = kids.length
-      ? `<span class="path-narrows">${escapeHtml(
-          textOf("Optimization overview", "Narrows to label")
-        )} ${kids
-          .map((k) => `<em>${escapeHtml(tokenOf(k))}</em>`)
-          .join(", ")}</span>`
-      : "";
-
+    const chips = members
+      .map((m) => {
+        const href = "#/node/" + encodeURIComponent(m.id);
+        return (
+          `<a class="opt-chip" href="${href}" data-goto="${href}">` +
+          `<span class="tnode-badge">${escapeHtml(tokenOf(m))}</span>` +
+          `<span class="opt-chip-title">${escapeHtml(m.title)}</span></a>`
+        );
+      })
+      .join("");
     return (
-      `<button class="path-card" data-goto="#/node/${encodeURIComponent(
-        head.id
-      )}">` +
+      `<div class="path-card">` +
       `<span class="path-label">${escapeHtml(
         textOf("Optimization overview", labelField)
       )}</span>` +
@@ -515,13 +563,11 @@ function renderOptimizationOverview(model) {
       )}</span>` +
       `<span class="path-leads">` +
       `<span class="path-leads-label">${escapeHtml(
-        textOf("Optimization overview", "Leads to label")
-      )}</span> ` +
-      `<span class="path-head"><span class="tnode-badge">${escapeHtml(
-        tokenOf(head)
-      )}</span> ${escapeHtml(head.title)}</span> ${narrows}` +
+        textOf("Optimization overview", "Options label")
+      )}</span>` +
+      `<span class="opt-chips">${chips}</span>` +
       `</span>` +
-      `</button>`
+      `</div>`
     );
   };
 
@@ -532,9 +578,6 @@ function renderOptimizationOverview(model) {
         { label: paradigm.name, current: true },
       ])}
       <header class="profile-head">
-        <span class="profile-tag">${escapeHtml(
-          textOf("Decision tree section", "Paradigm label")
-        )}</span>
         <h2>${escapeHtml(paradigm.name)}</h2>
       </header>
       <div class="overview-intro field-body">${md(paradigm.intro)}</div>
@@ -596,8 +639,6 @@ function renderProfile(model, node) {
 
       <div class="core-fields">${coreHtml}</div>
 
-      ${nextStepsHtml(model, node)}
-
       ${
         expandHtml
           ? `<div class="expandables">
@@ -615,65 +656,21 @@ function renderProfile(model, node) {
   wireModelLinks();
 }
 
-// The guided "narrow further" section: for a branch head (LP, NLP), offer its
-// children (IP/BP, MINLP) with the condition text from site_text.md.
-function nextStepsHtml(model, node) {
-  const token = tokenOf(node);
-  let children = null;
-  for (const def of Object.values(OPT_BRANCHES)) {
-    if (def.childrenOf[token]) children = def.childrenOf[token];
-  }
-  if (!children || !children.length) return "";
-
-  const cards = children
-    .map((t) => {
-      const id = model.tokenToId[t];
-      if (!id) return "";
-      const child = model.byId[id];
-      const condition = textOf("Next-step offers", t);
-      return (
-        `<button class="offer-card" data-goto="#/node/${encodeURIComponent(
-          id
-        )}">` +
-        `<span class="tnode-badge">${escapeHtml(tokenOf(child))}</span>` +
-        `<span class="offer-body">` +
-        `<span class="offer-title">${escapeHtml(child.title)}</span>` +
-        `<span class="offer-cond">${escapeHtml(condition)}</span>` +
-        `</span>` +
-        `<span class="offer-arrow">→</span>` +
-        `</button>`
-      );
-    })
-    .join("");
-
-  return (
-    `<div class="next-steps">` +
-    `<h3 class="next-steps-heading">${escapeHtml(
-      textOf("Model page", "Where to go next heading")
-    )}</h3>` +
-    `<div class="offer-cards">${cards}</div>` +
-    `</div>`
-  );
-}
-
 // ---------------------------------------------------------------------------
 // Breadcrumbs
 // ---------------------------------------------------------------------------
 
-// Build the trail of crumbs for a node: Decision tree > [Optimization > branch >
-// ancestors >] self. Node crumbs are links; the branch label is plain text.
+// Build the trail of crumbs for a node: Decision tree > [Optimization > branch >]
+// self. Node crumbs are links; the branch label is plain text. Within
+// optimization the five models are leaves of their branch (LP/IP/BP under
+// linear, NLP/MINLP under nonlinear), so there is no model-to-model ancestry.
 function breadcrumbTrail(model, node) {
   const crumbs = [{ label: textOf("Model page", "Back to tree"), href: "#/" }];
   const token = tokenOf(node);
 
-  // Which optimization branch (if any) does this node belong to?
   let branchKey = null;
-  let def = null;
   for (const [key, d] of Object.entries(OPT_BRANCHES)) {
-    if (d.head === token || Object.values(d.childrenOf).flat().includes(token)) {
-      branchKey = key;
-      def = d;
-    }
+    if (d.members.includes(token)) branchKey = key;
   }
 
   if (branchKey) {
@@ -684,18 +681,6 @@ function breadcrumbTrail(model, node) {
         ? textOf("Optimization overview", "Linear label")
         : textOf("Optimization overview", "Nonlinear label");
     crumbs.push({ label: branchLabel }); // category label, not a link
-
-    // Ancestor head (for children like IP, BP, MINLP).
-    const isHead = def.head === token;
-    if (!isHead) {
-      const headId = model.tokenToId[def.head];
-      if (headId) {
-        crumbs.push({
-          label: tokenOf(model.byId[headId]),
-          href: "#/node/" + encodeURIComponent(headId),
-        });
-      }
-    }
   }
 
   crumbs.push({ label: tokenOf(node), current: true });

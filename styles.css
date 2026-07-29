@@ -11,21 +11,31 @@
   --line-strong: #d7d3c8;
   --accent: #3a4a63;
 
-  /* Paradigm colours. Optimization is one hue for the whole subtree. */
+  /* Two groups. "Describe" (descriptive + simulation) shares a green family;
+     "Decide" (optimization) uses purple. */
+  --c-describe: #2f8f6f;
+  --c-describe-region-bg: #f0f7f4;
+  --c-describe-region-border: #bfe0d3;
+  --c-decide: #5a4fbf;
+  --c-decide-region-bg: #f3f1fc;
+  --c-decide-region-border: #d3ccf0;
+
+  /* Model box colours. Descriptive and simulation are two shades of the
+     Describe green; the optimization models all use the Decide purple. */
   --c-descriptive: #2f8f6f;
   --c-descriptive-bg: #e8f4ee;
   --c-descriptive-border: #a8d5c3;
+  --c-simulation: #2f8a86;
+  --c-simulation-bg: #e5f2f0;
+  --c-simulation-border: #a6d3cd;
   --c-optimization: #5a4fbf;
   --c-optimization-bg: #ece9fb;
   --c-optimization-border: #c4bced;
-  --c-simulation: #b5613f;
-  --c-simulation-bg: #f7ece5;
-  --c-simulation-border: #e3bda9;
 
-  /* Neutral root box ("Business question") — not a paradigm, not clickable. */
-  --c-root-bg: #efece2;
-  --c-root-border: #d8d2c2;
-  --c-root-ink: #55514a;
+  /* Neutral question nodes — visibly different from model destinations. */
+  --c-question-bg: #f1efe9;
+  --c-question-border: #d6d1c6;
+  --c-question-ink: #55514a;
 
   --tree-line: #9198a1;
 
@@ -49,6 +59,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: hidden; /* the full-bleed tree diagram spans 100vw */
   background: var(--paper);
   color: var(--ink);
   font-family: var(--sans);
@@ -133,15 +144,25 @@ main {
   color: var(--ink-soft);
 }
 
-/* Top-down decision-tree diagram: rows of boxes joined by SVG connector lines.
-   The diagram can be wider than the text column, so it scrolls horizontally on
-   its own if the viewport is narrow. */
+/* Top-down decision-tree diagram: question nodes at every fork, joined by SVG
+   connector lines, splitting into two colour-coded groups. The diagram can be
+   wider than the text column, so it scrolls horizontally if the viewport is
+   narrow.
+
+   Stacking: the SVG (positioned, z-index 0) paints above the group regions'
+   in-flow backgrounds but below the boxes (positioned, z-index 1). So lines sit
+   on top of the group tints yet behind the node boxes. */
 .tree-diagram {
   position: relative;
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 8px 4px 12px;
+  /* Full-bleed: the diagram is wider than the text column, so let it span the
+     viewport and centre its content, scrolling sideways only when the viewport
+     is narrower than the diagram itself. */
+  width: 100vw;
+  margin-left: calc(50% - 50vw);
+  padding: 8px 24px 16px;
   overflow-x: auto;
 }
 .tree-lines {
@@ -159,38 +180,88 @@ main {
 }
 
 .tree-level {
-  position: relative;
-  z-index: 1;
   display: flex;
   justify-content: center;
   width: 100%;
 }
-.level-paradigms {
-  justify-content: space-between;
-  max-width: 860px;
-  margin-top: 54px;
-}
-.opt-subtree {
-  position: relative;
-  z-index: 1;
+
+/* The two group regions side by side, under the first question. */
+.groups-row {
   display: flex;
   justify-content: center;
   align-items: flex-start;
-  gap: 88px;
-  margin-top: 54px;
+  gap: 56px;
+  margin-top: 52px;
 }
-.subcol {
+.group {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 50px;
+  border-radius: 18px;
+  border: 1px solid var(--line-strong);
+  padding: 16px 26px 26px;
 }
-.leaf-row {
+.group-describe {
+  background: var(--c-describe-region-bg);
+  border-color: var(--c-describe-region-border);
+}
+.group-decide {
+  background: var(--c-decide-region-bg);
+  border-color: var(--c-decide-region-border);
+}
+.group-body {
   display: flex;
-  gap: 22px;
+  flex-direction: column;
+  align-items: center;
+  gap: 46px;
+  margin-top: 44px;
+}
+.answer-row {
+  display: flex;
+  gap: 20px;
+}
+.subbranch-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 40px;
+}
+.subbranch {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 42px;
 }
 
-/* A box in the diagram. Buttons are clickable; the static root is not. */
+/* Group header — a solid pill in the group's colour, and a connector node. */
+.group-label {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  border-radius: 12px;
+  padding: 10px 20px;
+  color: #fff;
+  text-align: center;
+}
+.group-describe .group-label {
+  background: var(--c-describe);
+}
+.group-decide .group-label {
+  background: var(--c-decide);
+}
+.group-label-title {
+  font-weight: 700;
+  font-size: 1.1rem;
+}
+.group-label-cap {
+  font-size: 0.82rem;
+  opacity: 0.9;
+  max-width: 26ch;
+}
+
+/* A box in the diagram. */
 .tnode2 {
   position: relative;
   z-index: 1;
@@ -198,8 +269,8 @@ main {
   flex-direction: column;
   align-items: center;
   gap: 3px;
-  min-width: 150px;
-  padding: 14px 20px;
+  min-width: 132px;
+  padding: 13px 18px;
   border-radius: 14px;
   border: 1.5px solid var(--line-strong);
   background: var(--card);
@@ -213,7 +284,7 @@ main {
   box-shadow: 0 10px 24px rgba(31, 35, 40, 0.12);
 }
 .tnode2:focus-visible {
-  outline: 3px solid var(--c-optimization);
+  outline: 3px solid var(--c-decide);
   outline-offset: 2px;
 }
 .tnode2.is-static {
@@ -221,36 +292,59 @@ main {
 }
 .tnode2-title {
   font-weight: 700;
-  font-size: 1.05rem;
+  font-size: 1.02rem;
 }
 .tnode2-sub {
-  font-size: 0.85rem;
+  font-size: 0.84rem;
   opacity: 0.85;
 }
 
-/* Colour variants (fill + border + text), matching the paradigm palette. */
-.tnode2.c-root {
-  background: var(--c-root-bg);
-  border-color: var(--c-root-border);
-  color: var(--c-root-ink);
+/* Question nodes: neutral fill, visibly distinct from model destinations. */
+.tnode2.kind-question {
+  background: var(--c-question-bg);
+  border-color: var(--c-question-border);
+  color: var(--c-question-ink);
+  min-width: 0;
+  max-width: 230px;
 }
+.tnode2.kind-question .tnode2-title {
+  font-weight: 600;
+  font-size: 0.98rem;
+}
+
+/* Answer chips (Linear / Nonlinear): small labels on a branch. */
+.tnode2.kind-chip {
+  min-width: 0;
+  padding: 5px 14px;
+  border-radius: 999px;
+  border-style: dashed;
+  background: transparent;
+  border-color: var(--c-decide);
+  color: var(--c-decide);
+}
+.tnode2.kind-chip .tnode2-title {
+  font-size: 0.82rem;
+  letter-spacing: 0.02em;
+}
+
+/* Model destination colour variants (fill + border + text). */
 .tnode2.c-descriptive {
   background: var(--c-descriptive-bg);
   border-color: var(--c-descriptive-border);
   color: var(--c-descriptive);
-}
-.tnode2.c-optimization {
-  background: var(--c-optimization-bg);
-  border-color: var(--c-optimization-border);
-  color: var(--c-optimization);
 }
 .tnode2.c-simulation {
   background: var(--c-simulation-bg);
   border-color: var(--c-simulation-border);
   color: var(--c-simulation);
 }
+.tnode2.c-optimization {
+  background: var(--c-optimization-bg);
+  border-color: var(--c-optimization-border);
+  color: var(--c-optimization);
+}
 
-/* Badge shown on model tokens (LP, IP, …) in path cards and offer cards. */
+/* Badge shown on model tokens (LP, IP, …) in the overview chips. */
 .tnode-badge {
   flex: 0 0 auto;
   font-size: 0.72rem;
@@ -559,77 +653,32 @@ code {
   color: var(--ink-faint);
   font-weight: 700;
 }
-.path-head {
-  font-weight: 600;
-}
-.path-narrows {
-  color: var(--ink-faint);
-  font-size: 0.88rem;
-}
-.path-narrows em {
-  font-style: normal;
-  font-weight: 700;
-  color: var(--c-optimization);
-}
-
-/* ----------------------------------------------------- next-step offer cards */
-
-.next-steps {
-  margin-top: 30px;
-  padding-top: 22px;
-  border-top: 1px solid var(--line);
-}
-.next-steps-heading {
-  font-family: var(--serif);
-  font-size: 1.2rem;
-  margin: 0 0 14px;
-}
-.offer-cards {
+/* Member chips listed under each branch on the overview page. */
+.opt-chips {
   display: flex;
-  flex-direction: column;
-  gap: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 6px;
 }
-.offer-card {
-  display: flex;
+.opt-chip {
+  display: inline-flex;
   align-items: center;
-  gap: 14px;
-  text-align: left;
-  cursor: pointer;
-  font-family: inherit;
+  gap: 8px;
+  text-decoration: none;
   color: var(--ink);
-  background: var(--c-optimization-bg);
+  background: var(--card);
   border: 1px solid var(--c-optimization-border);
-  border-radius: 12px;
-  padding: 14px 18px;
-  transition: transform 0.12s ease, box-shadow 0.12s ease,
-    border-color 0.12s ease;
+  border-radius: 999px;
+  padding: 5px 12px 5px 5px;
+  font-size: 0.9rem;
+  transition: border-color 0.12s ease, box-shadow 0.12s ease;
 }
-.offer-card:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 10px 22px rgba(31, 35, 40, 0.08);
+.opt-chip:hover {
   border-color: var(--c-optimization);
+  box-shadow: 0 6px 16px rgba(31, 35, 40, 0.08);
 }
-.offer-card:focus-visible {
-  outline: 3px solid var(--c-optimization);
-  outline-offset: 2px;
-}
-.offer-body {
-  display: flex;
-  flex-direction: column;
-  gap: 2px;
-  flex: 1;
-}
-.offer-title {
+.opt-chip-title {
   font-weight: 600;
-}
-.offer-cond {
-  color: var(--ink-soft);
-  font-size: 0.92rem;
-}
-.offer-arrow {
-  color: var(--c-optimization);
-  font-size: 1.2rem;
-  font-weight: 700;
 }
 
 /* --------------------------------------------------------------- responsive */
@@ -645,19 +694,25 @@ code {
   .paths {
     grid-template-columns: 1fr;
   }
-  /* Keep the diagram legible on small screens: shrink boxes and let the
+  /* Keep the diagram legible on small screens: tighten spacing and let the
      diagram scroll sideways within its own container rather than squashing. */
   .tnode2 {
-    min-width: 118px;
-    padding: 11px 14px;
+    min-width: 104px;
+    padding: 10px 12px;
   }
   .tnode2-title {
-    font-size: 0.98rem;
+    font-size: 0.95rem;
   }
-  .opt-subtree {
-    gap: 40px;
+  .groups-row {
+    gap: 24px;
   }
-  .level-paradigms {
+  .subbranch-row {
+    gap: 24px;
+  }
+  .group {
+    padding: 12px 14px 18px;
+  }
+  .answer-row {
     gap: 12px;
   }
 }

@@ -24,8 +24,9 @@ Open it in any text editor. It is organised into `## Section` groups, each with
 `#### Field` entries. **Keep the `##` and `####` headings as they are; change only
 the text beneath a `####` heading.** For example, to change the site's main
 heading, edit the text under `#### Title` in the `## Header` section. The
-`## Next-step offers` section holds the conditions shown when one model leads to a
-more specific one (the `####` heading there is the target model's abbreviation).
+`## Questions` section holds the question shown at each fork of the decision tree,
+and the `## Groups` section holds the two group labels (**Describe** / **Decide**)
+and their captions.
 
 ## Editing the model profiles — `content/tool_profiles.md`
 
@@ -53,15 +54,22 @@ have to touch any code.
 
 ## How the site is navigated
 
-- The landing page shows the three paradigms: **Descriptive**, **Optimization**,
-  and **Simulation**.
-- Descriptive and Simulation open their single model profile directly.
-- Optimization opens an **overview page** (built from the Optimization intro in
-  the profiles file) that offers two paths: **Linear** → LP, and **Nonlinear** →
-  NLP. From LP the site offers IP and BP; from NLP it offers MINLP.
+- The landing page is a decision flowchart. A neutral **question node** sits at
+  every fork; following your answers leads to a model.
+- The first question (*what do you need?*) splits into two colour-coded groups:
+  **Describe** (green — descriptive and simulation) and **Decide** (purple —
+  optimization).
+- **Describe** asks whether the inputs are uncertain → **Descriptive** or
+  **Simulation**.
+- **Decide** asks whether every relationship is linear. The **Linear** branch
+  asks what type the variables are → **LP**, **IP**, or **BP** (three co-equal
+  answers). The **Nonlinear** branch asks whether any variable must be a whole
+  number or yes/no → **NLP** or **MINLP**.
+- Question nodes are not clickable; the model boxes are. Clicking one opens its
+  profile.
 - Every model page shows a **breadcrumb trail** (e.g. *Decision tree ›
-  Optimization › Linear › LP › IP*) so a student can see how they arrived and step
-  back up.
+  Optimization › Linear › IP*) so a student can see how they arrived and step back
+  up.
 
 ## Previewing locally
 
