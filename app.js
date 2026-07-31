@@ -80,7 +80,16 @@ async function boot() {
 async function fetchText(url) {
   const res = await fetch(url, { cache: "no-store" });
   if (!res.ok) throw new Error("HTTP " + res.status + " for " + url);
-  return res.text();
+  // Decode by the file's own byte-order mark rather than trusting the HTTP
+  // charset. A content file re-saved as UTF-16 (as some editors on Windows do)
+  // would otherwise decode to garbage and parse to nothing. The TextDecoder
+  // strips the BOM in each case.
+  const bytes = new Uint8Array(await res.arrayBuffer());
+  if (bytes[0] === 0xff && bytes[1] === 0xfe)
+    return new TextDecoder("utf-16le").decode(bytes);
+  if (bytes[0] === 0xfe && bytes[1] === 0xff)
+    return new TextDecoder("utf-16be").decode(bytes);
+  return new TextDecoder("utf-8").decode(bytes);
 }
 
 // ---------------------------------------------------------------------------
