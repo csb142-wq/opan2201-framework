@@ -68,7 +68,7 @@ The question shown at each fork in the decision tree. Change the wording freely;
 the answers below each question stay the same.
 
 #### What do you need
-What is your objective?
+What problem are you trying to solve?
 
 #### Inputs uncertain
 How do you intend to use historical data?
