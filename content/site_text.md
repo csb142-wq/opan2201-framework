@@ -60,7 +60,7 @@ I'm trying to understand what happened, or what could happen.
 Prescriptive
 
 #### Decide caption
-I want to find the best course of action under a set of constraints.
+I want to find the optimal choice given my constraints and objectives.
 
 ## Questions
 
@@ -71,7 +71,7 @@ the answers below each question stay the same.
 What is your objective?
 
 #### Inputs uncertain
-Does your model use known inputs?
+How do you intend to use historical data?
 
 #### Everything linear
 Are ALL objective functions and constraints linear?
@@ -95,16 +95,16 @@ I am trying to summarize or identify trends in past data.
 I want to explore a range of future possibilities based on past data.
 
 #### LP
-All my variables are linear, but they don't face other constraints.
+My variables don't face other constraints besides linearity.
 
 #### NLP
 No, there are no further constraints.
 
 #### IP
-At least one variable must be a whole number.
+At least one of my variables must be a whole number.
 
 #### BP
-One of my variables either occurs or it doesn’t.
+At least one of my variables either occurs or it doesn’t.
 
 #### MINLP
 Yes, at least one of my variables faces a binary or integer constraint.
