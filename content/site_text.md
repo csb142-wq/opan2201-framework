@@ -32,18 +32,15 @@ OPAN 2201 · Modeling Analytics
 Model selection framework
 
 #### Intro
-A guide to choosing the right modeling tool for a business problem, and
-understanding why. Start from the decision tree, then open any model to see what
-to build and the reasoning behind it.
+This guide helps you identify the right modeling tool for your business problem and explains the reasoning behind each choice. Start with the decision tree, then open any model to see what to build and why it works.
 
 ## Decision tree section
 
 #### Heading
-Decision tree
+Decision Tree
 
 #### Intro
-Start with what you are trying to do. Each fork below asks one question; follow
-your answers down to the model that fits, then open it.
+Start with your objective. Each fork below asks one question: follow your answers to the model that fits, then click in to see what to build.
 
 #### Accessible label
 Model selection decision tree
@@ -57,13 +54,13 @@ it.
 Descriptive
 
 #### Describe caption
-Understand what happened, or what could happen.
+I'm trying to understand what happened, or what could happen.
 
 #### Decide label
 Prescriptive
 
 #### Decide caption
-Find the best course of action under constraints.
+I want to find the best course of action under a set of constraints.
 
 ## Questions
 
@@ -71,19 +68,19 @@ The question shown at each fork in the decision tree. Change the wording freely;
 the answers below each question stay the same.
 
 #### What do you need
-What do you need?
+What is your objective?
 
 #### Inputs uncertain
-Are the inputs uncertain?
+Does your model use known inputs?
 
 #### Everything linear
-Is every relationship linear?
+Are ALL objective functions and constraints linear?
 
 #### Variable type
-What type are the variables?
+Which option best describes your variables?
 
 #### Whole number or yes-no
-Is any variable a whole number or a yes/no choice?
+Must any of your variables be a whole number or a "yes or no" choice?
 
 ## Tree subtitles
 
@@ -92,25 +89,25 @@ A short line shown beneath each model box in the decision-tree diagram. The
 blank to show only the box's title.
 
 #### Descriptive
-what happened
+I am trying to summarize or identify trends in past data.
 
 #### Simulation
-uncertainty
+I want to explore a range of future possibilities based on past data.
 
 #### LP
-Solver / PuLP
+All my variables are linear, but they don't face other constraints.
 
 #### NLP
-minimize()
+No, there are no further constraints.
 
 #### IP
-whole-number
+At least one variable must be a whole number.
 
 #### BP
-yes / no
+One of my variables either occurs or it doesn’t.
 
 #### MINLP
-basinhopping
+Yes, at least one of my variables faces a binary or integer constraint.
 
 ## Optimization overview
 
