@@ -66,14 +66,6 @@ example.
 - If the goal is the best allocation or decision rather than a computed result, use Optimization.
 - If the inputs are genuinely uncertain and a range of outcomes is needed, use Simulation.
 
-#### Forward projection (expandable)
-Projecting values forward with a growth rate belongs to descriptive modeling
-rather than to a separate forecasting model type. Extending a trend at an assumed
-rate is a mechanical calculation, not a prediction. It states what the value would
-be if the rate holds, and it carries none of the uncertainty that a model of a
-variable future would include. When the future is genuinely uncertain and a range
-is needed, the appropriate model type is Simulation.
-
 #### Limitations and common misuses (expandable)
 Descriptive models describe. They do not prescribe a decision or predict an
 uncertain future. The most common misuse is presenting a projection as a forecast,
@@ -100,10 +92,10 @@ the inputs and assumptions clearly and, where it matters, to show the sensitivit
 of the result using a data table.
 
 #### Recommended tool
-Excel. The grid, formulas, and what-if tools are suited to this work. Data tables
+Excel: the grid, formulas, and what-if tools are suited to this work. Data tables
 provide one- and two-input sensitivity analysis, and Goal Seek reverse-calculates
 the input that produces a target output, such as a breakeven point. Move to Python
-only when the volume of data exceeds what the spreadsheet handles well.
+if the volume of data exceeds what the spreadsheet handles well.
 
 ---
 
@@ -170,10 +162,9 @@ report how the recommendation changes as key inputs vary. In a client memo, this
 means presenting the sensitivity analysis alongside the recommended allocation.
 
 #### Recommended tool
-Excel Solver with the Simplex LP method when the problem is small and its
+Use Excel Solver with the Simplex LP method when the problem is small and its
 structure should be visible to stakeholders in the cells. Move to PuLP when the
-problem is larger or when it requires automation, reproducibility, or version
-control.
+problem is larger or when it requires automation or scalability. 
 
 ---
 
@@ -188,7 +179,7 @@ at least one decision variable must be a whole number.
 #### When to use it
 Use an integer program when the decision is how many of something indivisible,
 such as units bought in fixed increments, people assigned, or machines run, and a
-fractional answer would have no meaning. Every relationship is still linear. The
+fractional answer would have no meaning. Every relationship is still linear, so the
 only change from a linear program is that one or more variables are restricted to
 whole numbers. In the GWM case, the client can only invest in $150k increments, so
 the decision becomes how many increments to place in each asset class.
