@@ -77,7 +77,7 @@ Am I only describing what the data shows, or am I experimenting with uncertainty
 Are ALL my objective functions and constraints linear, or do they have even one nonlinearity?
 
 #### Variable type
-Does my model require any further restraints than just total linearity?
+Does my model require any further constraints other than linearity?
 
 #### Whole number or yes-no
 Must any of my variables be a whole number or require a "yes or no" choice?
