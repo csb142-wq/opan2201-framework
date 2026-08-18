@@ -134,8 +134,7 @@ Models
 ## Model page
 
 #### Reasoning note
-The reasoning — limitations, tradeoffs, ethics, and model-specific detail. Open
-what you need.
+Expand the dropdowns to learn more about this model's limitations, tradeoffs, and ethical considerations.
 
 #### Back to tree
 Decision tree
