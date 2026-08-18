@@ -92,7 +92,7 @@ the inputs and assumptions clearly and, where it matters, to show the sensitivit
 of the result using a data table.
 
 #### Recommended tool
-Excel: the grid, formulas, and what-if tools are suited to this work. Data tables
+Use Excel, as the grid, formulas, and what-if tools are suited to this work. Data tables
 provide one- and two-input sensitivity analysis, and Goal Seek reverse-calculates
 the input that produces a target output, such as a breakeven point. 
 
@@ -514,8 +514,8 @@ output should be communicated using percentiles and worst-case scenarios rather
 than an average alone.
 
 #### Recommended tool
-Python: use NumPy for vectorized sampling across the np.random distributions, and
+In Python, use NumPy for vectorized sampling across the np.random distributions, and
 SciPy for the t distributions and summary statistics.
-Excel: can also run very simple simulations, but not at the number of iterations or the
+Excel can also run very simple simulations, but not at the number of iterations or the
 range of distributions that risk modeling requires, so this model type is best built in
 Python.
