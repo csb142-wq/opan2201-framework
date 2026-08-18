@@ -456,7 +456,7 @@ then summarizes the resulting distribution, rather than producing a single answe
 
 #### When to use it
 Use a simulation when the important inputs are not fixed, such as market returns,
-demand, costs, or project delays, and the goal is to understand the range of
+demand, or costs, and the goal is to understand the range of
 outcomes and their likelihood rather than a single estimate. This is the model
 type for assessing risk, including the best case, the worst case, and the chance
 of an unfavorable result. In the GWM case, a simulation evaluates a portfolio
@@ -469,51 +469,33 @@ returns and the downside risk.
 - If the goal is the single best decision under constraints and the inputs are known, use Optimization.
 - If a single number to plan around is needed rather than a distribution, Descriptive or Optimization is the better fit.
 
-Simulation and optimization are complementary rather than competing. The approach
-used in this course is to optimize on best-guess inputs to produce a plan, and
-then to simulate in order to test that plan against uncertainty. When both a
-decision and a risk assessment are needed, both models are used, in that order.
-
 #### Choosing the distribution (expandable)
-The main contribution of the modeler in a simulation is deciding which inputs are
-uncertain and what distribution represents each one. The common choices are the
-normal distribution, for values that cluster around a mean such as returns or
-demand; the triangular distribution, defined by a minimum, most likely, and
-maximum value, for cases where data is limited but an expert estimate exists; the
-uniform distribution, where every value in a range is equally likely; the discrete
-distribution, for specific values with set probabilities; the Poisson
-distribution, for counts of events in an interval such as arrivals or calls; the
-binomial distribution, for the number of successes in a fixed number of trials;
-and the t or fat-tailed distribution, for cases where extreme events matter more
-than a normal curve allows. This choice is not cosmetic, because it determines the
-risk picture the model produces.
+When using a simulation model, the user must decide the best distribution for each uncertain
+input: 
+- Normal distribution: values that cluster around a mean such as returns or
+demand
+- Triangular distribution: defined by a minimum, most likely, and
+maximum value
+- Uniform distribution: every value in a range is equally likely
+- Discrete distribution: specific values with set probabilities
+- Poisson distribution: counts of events in an interval such as arrivals or calls
+- Binomial distribution: the number of successes in a fixed number of trials
 
 #### Interpreting the output (expandable)
 Because the output is a distribution rather than a single number, it is
-interpreted using descriptive statistics. The mean is the value to plan around.
-The standard deviation measures the spread, that is, how uncertain the outcome is.
-Percentiles give scenario thresholds, with the 5th percentile as a worst case, the
-50th as the median, and the 95th as a best case. The mode identifies the single
-most typical result. Reporting only the mean discards the information that
-motivated running the simulation.
-
-#### How the simulation runs (expandable)
-A simulation draws many random samples for each uncertain input and computes an
-outcome for each draw, repeated thousands of times. This is the reason it is a
-Python model type in practice. NumPy generates and processes entire arrays of
-draws at once, in a vectorized form using np.random and, where the shapes of
-arrays must align, np.newaxis, which allows ten thousand scenarios to run in a
-single pass rather than in a slow loop. Two practical points follow. First, the
-results contain sampling variation, so a larger number of iterations produces
-steadier estimates. Second, a loop is still required when one replication depends
-on the previous one, or when the model is too complex to express as arrays.
+interpreted using descriptive statistics:
+- The mean is the average and the value to plan around
+- The standard deviation measures the spread, or how uncertain the outcome is
+- Percentiles give scenario thresholds, with the 5th percentile as a worst case, the
+50th as the median, and the 95th as a best case
+- The mode identifies the most frequently recurring value
 
 #### Limitations and common misuses (expandable)
-A simulation is only as reliable as the distributions chosen for it. The most
-consequential misuse is understating the risk in the tails. A distribution with
-thin tails makes rare but severe events, such as those in 2008 or in 2020, appear
-nearly impossible when they are not, and these are exactly the outcomes a decision
-maker most needs to see. Other errors include reporting only the mean and hiding
+A simulation is only as reliable as the distributions chosen for it. A common
+misuse is understating the risk in the tails. A distribution with
+thin tails makes rare but severe events, such as those in 2008 Financial Crisis, appear
+nearly impossible when they are not, and these are often the most important outcomes a 
+decision maker needs to see. Other errors include reporting only the mean and hiding
 the spread that was the purpose of the model, running too few iterations, and
 assuming that uncertain inputs are independent when they are correlated, which a
 simple model does not capture. A simulation describes risk. It does not select a
@@ -523,25 +505,23 @@ decision.
 A simulation replaces a single answer with a fuller account of uncertainty. That
 account is more informative but requires interpretation through percentiles and
 ranges rather than a single figure, and it does not itself produce a decision.
-Choosing the distributions is a real modeling responsibility, and robust
-simulation is done in Python. A larger number of iterations increases confidence
-at the cost of computing time.
+The modeler is therefore responsible for choosing the distribution and interpreting 
+the results. A larger number of iterations increases confidence at the cost of computing 
+time.
 
 #### Ethical considerations and uncertainty (expandable)
-Simulation is the model type concerned with uncertainty, so its ethical concerns
-are close to the opposite of those in optimization. Its value lies in an honest
-account of the range of outcomes, and the failure is quietly reducing that account
-to a single comforting figure, whether by reporting only the expected value or by
-selecting distributions that understate the downside. Understating the risk in the
-tails is the most consequential version of this problem, since the tails are where
-the most important decisions are made. The distribution and correlation
+The value of simulation lies in a complete account of the range of outcomes, and the
+results can be manipulated by reporting only certain results, such as reporting only 
+the expected value or by selecting distributions that understate the downside. Understating 
+the risk in the tails is the most consequential version of this problem, since the tails are 
+where the most important decisions are made. The distribution and correlation
 assumptions are choices that shape the risk picture and should be stated, and the
 output should be communicated using percentiles and worst-case scenarios rather
 than an average alone.
 
 #### Recommended tool
-Python with NumPy for vectorized sampling across the np.random distributions, and
-SciPy for fat-tailed draws, using the t distribution, and for summary statistics.
-Excel can run very simple simulations but not at the number of iterations or the
-range of distributions that risk modeling requires, so this model type is built in
+Python: use NumPy for vectorized sampling across the np.random distributions, and
+SciPy for the t distributions and summary statistics.
+Excel: can also run very simple simulations, but not at the number of iterations or the
+range of distributions that risk modeling requires, so this model type is best built in
 Python.
