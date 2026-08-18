@@ -301,15 +301,14 @@ selection logic is more involved.
 
 #### Definition
 A nonlinear program finds the best continuous allocation when the objective or a
-constraint is nonlinear, for example when a variable is squared, two variables are
-multiplied, or a logarithm is involved.
+constraint is nonlinear (for example, when a variable is squared, two variables are
+multiplied, or a logarithm is involved).
 
 #### When to use it
 Use a nonlinear program when relationships curve rather than stay proportional,
 such as diminishing returns, economies of scale, or a risk penalty that grows
 faster as more is concentrated in one place. All variables are continuous, with no
-whole-number or yes or no requirement. It is the form of the mathematics that has
-changed, not the type of the variables. In the GWM case, a nonlinear program
+whole-number or "yes/no" requirement. In the GWM case, a nonlinear program
 maximizes a risk-adjusted return in which risk is a quadratic penalty on each
 allocation, so that doubling an allocation more than doubles its risk cost.
 
@@ -351,7 +350,7 @@ The risk-penalty coefficient, for instance, largely determines the recommendatio
 so it should be stated clearly and tested rather than left unexamined.
 
 #### Recommended tool
-Python with SciPy, using the minimize function with the SLSQP method, explicit
+Use Python with SciPy, using the minimize function with the SLSQP method, explicit
 bounds and constraints, and a valid starting point. Excel is not a practical tool
 for nonlinear optimization at this level, so this model is built in Python.
 
@@ -366,9 +365,9 @@ A mixed integer nonlinear program is the most difficult case, combining a
 nonlinear objective or constraint with at least one integer or binary variable.
 
 #### When to use it
-Use this model when two conditions hold at once: the mathematics curves, and a
-decision must be a whole number or a yes or no value. Either feature on its own
-points to a different model. It is the combination that defines a mixed integer
+Use this model when two conditions hold at once: the model contains nonlinearities, 
+and a decision must be a whole number or a yes or no value. Either feature on its own
+points to a different model, so it is the combination that defines a mixed integer
 nonlinear program. In the GWM case, the model selects at most three of four asset
 classes, a binary decision, while the allocations are subject to a nonlinear risk
 penalty, so a binary decision and a nonlinearity appear in the same model.
@@ -383,9 +382,9 @@ penalty, so a binary decision and a nonlinearity appear in the same model.
 A mixed integer nonlinear program does not fit the tools used for the other
 models. PuLP requires all relationships to be linear, and the plain minimize
 function requires all variables to be continuous, so neither can handle both
-features at once. Basinhopping is the method used instead. Rather than following a
-single slope, which finds only a local optimum, it repeatedly jumps to random
-starting points and runs a local search from each, keeping the best result found.
+features at once. Therefore, the basinhopping method should be used. Rather than 
+following a single slope, which finds only a local optimum, it repeatedly jumps to 
+random starting points and runs a local search from each, keeping the best result found.
 The whole-number requirement is enforced by rounding inside the objective and the
 constraint check, using np.round. Because basinhopping does not accept a
 constraints argument in the way the minimize function does, the constraint check
@@ -427,10 +426,9 @@ every constraint, since rounding can move a solution just outside the feasible
 region.
 
 #### Recommended tool
-Python with SciPy, using basinhopping with a local minimizer such as L-BFGS-B,
-np.round for the whole-number requirement, a constraint-check class in place of a
-constraints dictionary, and several seeds with a sufficient number of hops. This
-model is built in Python.
+Use Python with SciPy, using basinhopping with a local minimizer,np.round for the 
+whole-number requirement, a constraint-check class in place of a constraints 
+dictionary, and several seeds with a sufficient number of hops.
 
 ---
 
