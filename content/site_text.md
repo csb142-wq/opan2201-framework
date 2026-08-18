@@ -12,7 +12,7 @@ only the text beneath a `#### ` heading.
 ## Page
 
 #### Browser tab title
-OPAN 2201 · Model selection framework
+OPAN 2201 · Model Selection Framework
 
 #### Page description
 A guide to choosing the right modeling tool for a business problem — OPAN 2201.
@@ -60,7 +60,7 @@ I'm want to summarize historical data, identify patterns, or explore possible fu
 Prescriptive
 
 #### Decide caption
-I want to find the optimal choice given my constraints and objectives and produce a specific recommendation.
+I want to find the optimal choice given my constraints and objectives to produce a specific recommendation.
 
 ## Questions
 
@@ -74,10 +74,10 @@ Am I trying to understand the data, or am I trying to choose the best solution?
 Am I only describing what the data shows, or am I experimenting with uncertainty to see what could happen? 
 
 #### Everything linear
-Are ALL my objective functions and constraints linear?
+Are ALL my objective functions and constraints linear, or do they have even one nonlinearity?
 
 #### Variable type
-Which option best describes my variables?
+Does my model require any further restraints than just total linearity?
 
 #### Whole number or yes-no
 Must any of my variables be a whole number or require a "yes or no" choice?
