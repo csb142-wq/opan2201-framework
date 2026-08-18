@@ -157,8 +157,7 @@ estimates. Presenting the single solution without its sensitivity overstates how
 certain the recommendation is. The decision to model the problem as linear is
 itself an assumption that affects the answer, and factors left out, such as
 curvature, correlation, or risk, bias the result. The appropriate practice is to
-report how the recommendation changes as key inputs vary. In a client memo, this
-means presenting the sensitivity analysis alongside the recommended allocation.
+report how the recommendation changes as key inputs vary. 
 
 #### Recommended tool
 Use Excel Solver with the Simplex LP method when the problem is small and its
@@ -215,8 +214,8 @@ actually affects the decision before accepting that additional cost.
 An integer program carries the same risk as a linear program of overstating
 certainty in a single solution, with an added complication. The reported optimum
 may in fact be the best solution found within the solver's limits rather than a
-proven optimum, and presenting a solution stopped at a tolerance as proven
-misrepresents it. As always, the inputs that drive the allocation are estimates,
+proven optimum, and presenting a solution stopped at this limit may
+misrepresent it. As always, the inputs that drive the allocation are estimates,
 so the recommendation should be accompanied by a sensitivity check rather than a
 single figure.
 
@@ -229,7 +228,7 @@ solver stopped at a near-optimal solution rather than a proven one. In PuLP,
 integer problems sometimes require the PULP_CBC_CMD solver to be specified.
 
 #### Recommended tool
-Excel Solver with an integer constraint when the problem is small and its
+Use Excel Solver with an integer constraint when the problem is small and its
 structure should be visible. Move to PuLP with LpInteger when the problem is
 larger, and specify PULP_CBC_CMD if the integer solve does not behave as expected.
 
@@ -260,22 +259,19 @@ of the four asset classes, and the model determines which three to include.
 #### Variable type (expandable)
 A binary program is a special case of integer programming in which variables are
 restricted to one or zero. That restriction is what allows the model to represent
-yes or no inclusion and logical rules, such as "if this, then that" or "at most k
-of n," which a linear or general integer program cannot express directly.
+yes or no inclusion and logical rules, such as "if this, then that", which a linear
+or general integer program cannot express directly.
 
 #### Limitations and common misuses (expandable)
 Binary variables allow useful logic, but the number of possible combinations grows
-rapidly as options are added, so solving time can increase sharply. A common
-formulation problem is the "big-M" pattern used to turn constraints on and off. A
-value of M that is too large causes numerical instability, while a value that is
-too small removes valid solutions. A further misuse is choosing binary variables
-when a simpler continuous model would answer the question.
+rapidly as options are added, so solving time can increase sharply. A further misuse 
+is choosing binary variables when a simpler continuous model would answer the question.
 
 #### Key tradeoffs (expandable)
 A binary program provides expressiveness, since it can represent choices and
-conditions that no continuous model can. The cost is combinatorial difficulty and
-careful formulation. The more yes or no decisions the model contains, the harder
-it is to solve and the easier it is to specify the logic incorrectly.
+conditions that no continuous model can. The cost is careful setup because the 
+more yes or no decisions the model contains, the harder it is to solve and the 
+easier it is to specify the logic incorrectly.
 
 #### Ethical considerations and uncertainty (expandable)
 Selection models contain an implicit choice about which options were considered in
@@ -290,10 +286,10 @@ A binary program shares the integer constraint check. Confirm that Solver is
 enforcing the binary constraint and that the optimality gap is understood. In
 addition, test that logical constraints behave correctly at the extremes, for
 example that a limit of at most three genuinely excludes the fourth option, since
-big-M and either-or formulations can fail without warning.
+either-or formulations can fail without warning.
 
 #### Recommended tool
-Excel Solver with a binary constraint when the problem is small and its structure
+Use Excel Solver with a binary constraint when the problem is small and its structure
 should be visible. Move to PuLP with LpBinary when the problem is larger or the
 selection logic is more involved.
 
