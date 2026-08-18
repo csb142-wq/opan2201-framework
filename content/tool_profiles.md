@@ -506,8 +506,8 @@ A simulation replaces a single answer with a fuller account of uncertainty. That
 account is more informative but requires interpretation through percentiles and
 ranges rather than a single figure, and it does not itself produce a decision.
 The modeler is therefore responsible for choosing the distribution and interpreting 
-the results. A larger number of iterations increases confidence at the cost of computing 
-time.
+the results. Additionally, a larger number of iterations increases confidence at 
+the cost of computing time.
 
 #### Ethical considerations and uncertainty (expandable)
 The value of simulation lies in a complete account of the range of outcomes, and the
