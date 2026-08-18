@@ -94,8 +94,7 @@ of the result using a data table.
 #### Recommended tool
 Excel: the grid, formulas, and what-if tools are suited to this work. Data tables
 provide one- and two-input sensitivity analysis, and Goal Seek reverse-calculates
-the input that produces a target output, such as a breakeven point. Move to Python
-if the volume of data exceeds what the spreadsheet handles well.
+the input that produces a target output, such as a breakeven point. 
 
 ---
 
