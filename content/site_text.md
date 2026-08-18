@@ -32,7 +32,7 @@ OPAN 2201 · Modeling Analytics
 Model selection framework
 
 #### Intro
-This guide helps you identify the right modeling tool for your business problem and explains the reasoning behind each choice. Start with the decision tree, then open any model to see what to build and why it works.
+This guide helps you identify the right modeling tool for your business problem and explains the reasoning behind each choice. Start with the decision tree, answer the questions posed at each node, and determine the best model type for your problem.
 
 ## Decision tree section
 
@@ -54,13 +54,13 @@ it.
 Descriptive
 
 #### Describe caption
-I'm trying to understand what happened, or what could happen.
+I'm want to summarize historical data, identify patterns, or explore possible future scenarios without recommending an action.
 
 #### Decide label
 Prescriptive
 
 #### Decide caption
-I want to find the optimal choice given my constraints and objectives.
+I want to find the optimal choice given my constraints and objectives and produce a specific recommendation.
 
 ## Questions
 
@@ -68,19 +68,19 @@ The question shown at each fork in the decision tree. Change the wording freely;
 the answers below each question stay the same.
 
 #### What do you need
-What problem are you trying to solve?
+Am I trying to understand the data, or am I trying to choose the best solution?
 
 #### Inputs uncertain
-How do you intend to use historical data?
+Am I only describing what the data shows, or am I experimenting with uncertainty to see what could happen? 
 
 #### Everything linear
-Are ALL objective functions and constraints linear?
+Are ALL my objective functions and constraints linear?
 
 #### Variable type
-Which option best describes your variables?
+Which option best describes my variables?
 
 #### Whole number or yes-no
-Must any of your variables be a whole number or a "yes or no" choice?
+Must any of my variables be a whole number or require a "yes or no" choice?
 
 ## Tree subtitles
 
@@ -95,7 +95,7 @@ I am trying to summarize or identify trends in past data.
 I want to explore a range of future possibilities based on past data.
 
 #### LP
-My variables don't face other constraints besides linearity.
+No, there are no further constraints.
 
 #### NLP
 No, there are no further constraints.
