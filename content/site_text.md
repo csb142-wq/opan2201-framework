@@ -32,7 +32,7 @@ OPAN 2201 · Modeling Analytics
 Model selection framework
 
 #### Intro
-This guide helps you identify the right modeling tool for your business problem and explains the reasoning behind each choice. Start with the decision tree, answer the questions posed at each node, and determine the best model type for your problem.
+This guide will guide you through identifying the correct model for your business problem and explains the reasoning behind each choice. Use the decision tree to answer the questions posed at each node and determine the best model type for your problem.
 
 ## Decision tree section
 
