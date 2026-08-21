@@ -127,13 +127,13 @@ requirement that all funds are invested.
 
 #### When to use a different model
 - If a variable must be a whole number, such as investing in $150k increments, use IP.
-- If the decision is whether to include an option at all, a yes or no choice, use BP.
+- If the decision is whether to include an option at all, use BP.
 - If a relationship is nonlinear, such as a risk penalty that grows with the square of an allocation, use NLP.
-- If the inputs are genuinely uncertain and a range of outcomes is needed, use Simulation.
+- If the inputs are uncertain and a range of outcomes is needed, use Simulation.
 
 #### Limitations and common misuses (expandable)
 A linear relationship is often a simplification of reality, and forcing a curved
-relationship to be straight can produce a confident but incorrect answer. A more
+relationship to be straight can produce a confident but incorrect answer. A
 frequent problem is accepting the optimal solution without sensitivity analysis.
 Linear program solutions occur at the intersection of constraints, so a small
 change in an input can move the recommendation sharply. Two further mistakes are
@@ -143,7 +143,7 @@ rounding, since a rounded fractional solution is not guaranteed to be optimal or
 even feasible.
 
 #### Key tradeoffs (expandable)
-A linear program is the most tractable, fastest, and most easily explained
+A linear program is the fastest and most easily explained
 optimization model. The cost of that simplicity is the linearity assumption. The
 model returns one clear optimal answer but gives no indication of how stable that
 answer is, which is why sensitivity analysis is important here. At the tool level,
@@ -152,7 +152,7 @@ reproducibility.
 
 #### Ethical considerations and uncertainty (expandable)
 The result of a linear program, such as a specific dollar allocation, appears
-authoritative, but it depends on inputs that the modeler has acknowledged are
+complete, but it depends on inputs that the modeler has acknowledged are
 estimates. Presenting the single solution without its sensitivity overstates how
 certain the recommendation is. The decision to model the problem as linear is
 itself an assumption that affects the answer, and factors left out, such as
