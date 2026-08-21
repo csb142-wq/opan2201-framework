@@ -49,7 +49,7 @@ growth rate is descriptive work rather than forecasting under uncertainty.
 *Tag: descriptive*
 
 #### Definition
-A descriptive model organizes and computes on known data to describe a situation,
+A descriptive model organizes and analyzes data to describe a situation,
 producing totals, averages, or projections. It does not recommend a decision or
 model uncertainty.
 
@@ -58,17 +58,17 @@ Use a descriptive model to summarize what the data shows from fixed, known input
 This includes computing an outcome, tracking a metric, or projecting a value
 forward at an assumed growth rate. The inputs are treated as fixed, and the goal
 is calculation rather than a recommended decision. In the GWM case, a descriptive
-model computes the total return for a given portfolio allocation, or projects
-costs forward year over year at a fixed growth rate, as in the GT Coffee Roasters
+model computes the total return for a given portfolio allocation, or predicts
+costs year over year at a fixed growth rate, as in the GT Coffee Roasters
 example.
 
 #### When to use a different model
-- If the goal is the best allocation or decision rather than a computed result, use Optimization.
-- If the inputs are genuinely uncertain and a range of outcomes is needed, use Simulation.
+- If the goal is the best allocation or decision rather than a set result, use Optimization.
+- If the inputs are uncertain and a range of outcomes is needed, use Simulation.
 
 #### Limitations and common misuses (expandable)
 Descriptive models describe. They do not prescribe a decision or predict an
-uncertain future. The most common misuse is presenting a projection as a forecast,
+uncertain future. A common misuse is presenting a projection as a forecast,
 since carrying a growth rate forward produces a definite-looking number that is
 still only an assumption about the future. A related mistake is reading a single
 computed scenario as the full picture when a data table would show how sensitive
