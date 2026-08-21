@@ -252,9 +252,9 @@ of the four asset classes, and the model determines which three to include.
 
 #### When to use a different model
 - If the decision is how much, a continuous amount, use LP.
-- If the decision is how many whole units rather than yes or no, use IP.
+- If the decision is how many whole units rather than a yes or no choice, use IP.
 - If a relationship is nonlinear, use NLP, or MINLP if a variable is also binary.
-- If the inputs are genuinely uncertain and a range of outcomes is needed, use Simulation.
+- If the inputs are uncertain and a range of outcomes is needed, use Simulation.
 
 #### Variable type (expandable)
 A binary program is a special case of integer programming in which variables are
@@ -284,9 +284,9 @@ presented as though it were complete.
 #### Verifying the solution (expandable)
 A binary program shares the integer constraint check. Confirm that Solver is
 enforcing the binary constraint and that the optimality gap is understood. In
-addition, test that logical constraints behave correctly at the extremes, for
-example that a limit of at most three genuinely excludes the fourth option, since
-either-or formulations can fail without warning.
+addition, test that logical constraints behave correctly at the extremes; for
+example, that a limit of at most three genuinely excludes the fourth option, since
+either-or formulations can fail.
 
 #### Recommended tool
 Use Excel Solver with a binary constraint when the problem is small and its structure
