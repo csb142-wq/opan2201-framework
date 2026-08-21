@@ -184,9 +184,9 @@ the decision becomes how many increments to place in each asset class.
 
 #### When to use a different model
 - If the variables can be fractional after all, use LP.
-- If the decision is whether to include an option, a yes or no choice, use BP.
+- If the decision is whether to include an option, use BP.
 - If a relationship is nonlinear, use NLP, or MINLP if a variable is also an integer.
-- If the inputs are genuinely uncertain and a range of outcomes is needed, use Simulation.
+- If the inputs are uncertain and a range of outcomes is needed, use Simulation.
 
 #### Variable type (expandable)
 An integer program requires at least one integer variable, meaning a whole-number
@@ -204,7 +204,7 @@ be infeasible or can leave value unused. The integer optimum is generally not th
 linear optimum with its values rounded.
 
 #### Key tradeoffs (expandable)
-An integer program gains realism, since indivisible quantities are respected, at
+An integer is more realistic, since indivisible quantities are respected, at
 the cost of a harder computation. The best integer solution can be measurably
 worse than the linear bound, and that difference is a real feature of the problem
 rather than a solver error. It is worth confirming that the indivisibility
