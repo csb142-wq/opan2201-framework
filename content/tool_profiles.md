@@ -446,7 +446,7 @@ likely each outcome is.
 
 #### Definition
 A simulation generates many possible outcomes when key inputs are uncertain and
-then summarizes the resulting distribution, rather than producing a single answer.
+then summarizes the resulting distribution rather than producing a single answer.
 
 #### When to use it
 Use a simulation when the important inputs are not fixed, such as market returns,
@@ -491,24 +491,23 @@ thin tails makes rare but severe events, such as those in 2008 Financial Crisis,
 nearly impossible when they are not, and these are often the most important outcomes a 
 decision maker needs to see. Other errors include reporting only the mean and hiding
 the spread that was the purpose of the model, running too few iterations, and
-assuming that uncertain inputs are independent when they are correlated, which a
-simple model does not capture. A simulation describes risk. It does not select a
-decision.
+assuming that uncertain inputs are independent when they are correlated. A simulation
+can describe risk, but it cannot make a decision.
 
 #### Key tradeoffs (expandable)
 A simulation replaces a single answer with a fuller account of uncertainty. That
 account is more informative but requires interpretation through percentiles and
-ranges rather than a single figure, and it does not itself produce a decision.
+ranges rather than a single figure, and it does not produce a decision in and of itself.
 The modeler is therefore responsible for choosing the distribution and interpreting 
-the results. Additionally, a larger number of iterations increases confidence at 
-the cost of computing time.
+the results. Additionally, increasing model confidence require a larger number of iterations
+which increases the cost of computing time.
 
 #### Ethical considerations and uncertainty (expandable)
 The value of simulation lies in a complete account of the range of outcomes, and the
 results can be manipulated by reporting only certain results, such as reporting only 
 the expected value or by selecting distributions that understate the downside. Understating 
-the risk in the tails is the most consequential version of this problem, since the tails are 
-where the most important decisions are made. The distribution and correlation
+the risk in the tails can result serious consequences, since the tails are often where 
+the most important decisions are made. The distribution and correlation
 assumptions are choices that shape the risk picture and should be stated, and the
 output should be communicated using percentiles and worst-case scenarios rather
 than an average alone.
