@@ -366,7 +366,7 @@ nonlinear objective or constraint with at least one integer or binary variable.
 
 #### When to use it
 Use this model when two conditions hold at once: the model contains nonlinearities, 
-and a decision must be a whole number or a yes or no value. Either feature on its own
+and a decision must be a whole number or a "yes/no" value. Either feature on its own
 points to a different model, so it is the combination that defines a mixed integer
 nonlinear program. In the GWM case, the model selects at most three of four asset
 classes, a binary decision, while the allocations are subject to a nonlinear risk
@@ -376,7 +376,7 @@ penalty, so a binary decision and a nonlinearity appear in the same model.
 - If the problem is nonlinear but all variables are continuous, use NLP.
 - If a variable is integer or binary but every relationship is linear, use IP or BP.
 - If every relationship is linear and every variable is continuous, use LP.
-- If the inputs are genuinely uncertain and a range of outcomes is needed, use Simulation.
+- If the inputs are uncertain and a range of outcomes is needed, use Simulation.
 
 #### How the solver works (expandable)
 A mixed integer nonlinear program does not fit the tools used for the other
@@ -393,12 +393,12 @@ random, running several seeds and keeping the best result guards against a singl
 unrepresentative search.
 
 #### Limitations and common misuses (expandable)
-Basinhopping is a heuristic global search rather than an exact method, so it does
-not prove that a solution is optimal. It returns the best solution it happened to
-find. The common misuses follow from this. Relying on a single seed can mislead,
-since different seeds can produce different answers. Running too few hops does not
-explore the space adequately. And the rounding step used for whole numbers can
-produce solutions that quietly violate a constraint if they are not rechecked
+Basinhopping uses a global search rather than an exact method, so it does
+not prove that a solution is optimal. Instead, it returns the best solution it happened to
+find. Relying on a single seed can be misleading
+since different seeds can produce different answers, running too few hops does not
+explore the space adequately, and the rounding step used for whole numbers can
+produce solutions that violate a constraint if they are not rechecked
 after rounding.
 
 #### Key tradeoffs (expandable)
@@ -410,10 +410,8 @@ a proven best.
 
 #### Ethical considerations and uncertainty (expandable)
 Among these models, a mixed integer nonlinear program carries the greatest risk of
-overstated certainty, because the result appears to be the optimum but is the best
-outcome of a random search. Reporting it without noting that it is heuristic and
-depends on the seed overstates certainty more than any other model in the
-framework. An honest presentation runs enough seeds to show that the result is
+overstated certainty, because the result appears to be optimal but is really the best
+outcome of a random search. An honest presentation runs enough seeds to show that the result is
 stable and states plainly that it is a strong candidate rather than a proven
 optimum.
 
@@ -426,7 +424,7 @@ every constraint, since rounding can move a solution just outside the feasible
 region.
 
 #### Recommended tool
-Use Python with SciPy, using basinhopping with a local minimizer,np.round for the 
+Use Python with SciPy, using basinhopping with a local minimizer, np.round for the 
 whole-number requirement, a constraint-check class in place of a constraints 
 dictionary, and several seeds with a sufficient number of hops.
 
