@@ -315,7 +315,7 @@ allocation, so that doubling an allocation more than doubles its risk cost.
 #### When to use a different model
 - If every relationship is in fact linear, use LP, or IP or BP if a variable is integer or binary.
 - If the problem is nonlinear and a variable must also be integer or binary, use MINLP.
-- If the inputs are genuinely uncertain and a range of outcomes is needed, use Simulation.
+- If the inputs are uncertain and a range of outcomes is needed, use Simulation.
 
 #### How the solver works (expandable)
 SciPy's minimize function, using the SLSQP method, performs a local search. It
@@ -329,7 +329,7 @@ the negative of the objective.
 #### Limitations and common misuses (expandable)
 The main limitation is the difference between a local and a global optimum. The
 minimize function returns a local optimum tied to the starting point, so reporting
-it as the overall optimum can be incorrect. A sound practice is to test several
+it as the overall optimum can be incorrect. It is best practice to test several
 starting points and confirm that they converge to the same solution. Other common
 errors are forgetting to negate the objective for a maximization and
 underestimating how sensitive convergence is to the bounds and to the scaling of
@@ -346,7 +346,7 @@ best solution has been found.
 The local optimum issue is itself a matter of honest reporting, since presenting a
 result that depends on the starting point as definitive overstates what the model
 found. The nonlinear form is also a modeling choice with significant influence.
-The risk-penalty coefficient, for instance, largely determines the recommendation,
+The risk-penalty coefficient, for instance, largely determines the recommendation
 so it should be stated clearly and tested rather than left unexamined.
 
 #### Recommended tool
